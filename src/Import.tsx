@@ -1,9 +1,11 @@
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { Info, Link2, Clipboard, UploadCloud, FileText, Lock, ShieldCheck } from 'lucide-react'
 
 type ImportMethod = 'link' | 'paste' | 'upload' | null
 
 function Import() {
+  const navigate = useNavigate()
   const [activeMethod, setActiveMethod] = useState<ImportMethod>(null)
 
   return (
@@ -100,12 +102,6 @@ function Import() {
                   placeholder="https://chat.openai.com/share/..."
                   className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
                 />
-                <button
-                  type="button"
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
-                >
-                  Import from Link
-                </button>
               </div>
             )}
 
@@ -117,17 +113,11 @@ function Import() {
                   placeholder="Paste the full conversation text here..."
                   className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 resize-none"
                 />
-                <button
-                  type="button"
-                  className="mt-4 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
-                >
-                  Import Text
-                </button>
               </div>
             )}
 
             {activeMethod === 'upload' && (
-              <div className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-14 px-8">
+              <div className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-14 px-8 cursor-pointer">
                 <FileText size={32} className="text-slate-500 mb-4" />
                 <h3 className="text-white font-semibold mb-1">Drag & drop your file here</h3>
                 <p className="text-slate-400 text-sm mb-5">or click to browse</p>
@@ -142,6 +132,18 @@ function Import() {
           </>
         )}
       </div>
+
+      <button
+        type="button"
+        onClick={() => navigate('/processing')}
+        className={`w-full mt-6 text-white font-semibold text-sm py-3.5 rounded-xl transition-all ${
+          activeMethod
+            ? 'bg-blue-600 hover:bg-blue-700 opacity-100 pointer-events-auto'
+            : 'bg-blue-600 opacity-0 pointer-events-none'
+        }`}
+      >
+        Analyze Conversation
+      </button>
 
       <div className="flex items-center justify-between mt-6 px-2">
         <div className="flex items-center gap-2 text-slate-400 text-sm">
