@@ -3,6 +3,7 @@ import Sidebar from './Sidebar'
 import Home from './Home'
 import Import from './Import'
 import Processing from './Processing'
+import QuickPrompt from './QuickPrompt'
 import ComingSoon from './ComingSoon'
 
 function App() {
@@ -11,7 +12,7 @@ function App() {
       <Sidebar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/quick-prompt" element={<ComingSoon title="Quick Prompt" />} />
+        <Route path="/quick-prompt" element={<QuickPrompt />} />
         <Route path="/projects" element={<ComingSoon title="Projects" />} />
         <Route path="/import" element={<Import />} />
         <Route path="/processing" element={<Processing />} />
