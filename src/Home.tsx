@@ -1,6 +1,9 @@
+import { useNavigate } from 'react-router-dom'
 import { Link2, Clipboard, UploadCloud, Download, Lock, ShieldCheck } from 'lucide-react'
 
 function Home() {
+  const navigate = useNavigate()
+
   return (
     <div className="flex-1 flex gap-6 p-4 h-screen overflow-y-auto">
       {/* Center column */}
@@ -18,6 +21,7 @@ function Home() {
           <div className="flex gap-3 w-full max-w-md">
             <button
               type="button"
+              onClick={() => navigate('/import')}
               className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
             >
               <Link2 size={16} />
@@ -25,6 +29,7 @@ function Home() {
             </button>
             <button
               type="button"
+              onClick={() => navigate('/import')}
               className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
             >
               <Clipboard size={16} />
@@ -32,6 +37,7 @@ function Home() {
             </button>
             <button
               type="button"
+              onClick={() => navigate('/import')}
               className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
             >
               <UploadCloud size={16} />
