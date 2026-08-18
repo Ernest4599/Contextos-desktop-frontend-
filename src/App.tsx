@@ -4,6 +4,7 @@ import Home from './Home'
 import Import from './Import'
 import Processing from './Processing'
 import QuickPrompt from './QuickPrompt'
+import Package from './Package'
 import ComingSoon from './ComingSoon'
 
 function App() {
@@ -16,7 +17,7 @@ function App() {
         <Route path="/projects" element={<ComingSoon title="Projects" />} />
         <Route path="/import" element={<Import />} />
         <Route path="/processing" element={<Processing />} />
-        <Route path="/package" element={<ComingSoon title="Package" />} />
+        <Route path="/package" element={<Package />} />
         <Route path="/settings" element={<ComingSoon title="Settings" />} />
       </Routes>
     </div>
