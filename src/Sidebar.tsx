@@ -1,5 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom'
 import { Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown } from 'lucide-react'
+import type { ReactNode } from 'react'
 import Logo from './Logo'
 
 const navItems = [
@@ -11,7 +12,7 @@ const navItems = [
   { to: '/settings', label: 'Setting', icon: Settings },
 ]
 
-function Sidebar() {
+function Sidebar({ extra }: { extra?: ReactNode }) {
   const navigate = useNavigate()
 
   return (
@@ -67,6 +68,8 @@ function Sidebar() {
           </div>
         </div>
       </div>
+
+      {extra && <div className="mt-6 pt-6 border-t border-slate-800 px-2">{extra}</div>}
 
       <div className="mt-auto pt-4 border-t border-slate-800">
         <button

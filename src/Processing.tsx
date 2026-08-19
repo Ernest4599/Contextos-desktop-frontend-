@@ -1,10 +1,35 @@
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { FileText, Check, Circle, Trash2, Lock, ShieldCheck, MessageSquare, ClipboardList, Shield, HelpCircle, Package, Server, Key } from 'lucide-react'
 
 function Processing() {
-  const progress = 75
+  const navigate = useNavigate()
+  const [progress, setProgress] = useState(0)
   const radius = 80
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (progress / 100) * circumference
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          clearInterval(interval)
+          return 100
+        }
+        return prev + 2
+      })
+    }, 60)
+    return () => clearInterval(interval)
+  }, [])
+
+  useEffect(() => {
+    if (progress === 100) {
+      const timer = setTimeout(() => {
+        navigate('/context-ready')
+      }, 600)
+      return () => clearTimeout(timer)
+    }
+  }, [progress, navigate])
 
   return (
     <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
@@ -48,7 +73,7 @@ function Processing() {
                   strokeDasharray={circumference}
                   strokeDashoffset={offset}
                   strokeLinecap="round"
-                  className="text-blue-500"
+                  className="text-blue-500 transition-all duration-100"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -58,37 +83,43 @@ function Processing() {
 
             <div className="flex flex-col gap-4 flex-1">
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 20 ? 'bg-green-500' : 'bg-slate-800'}`}>
+                  {progress >= 20 && <Check size={12} className="text-white" strokeWidth={3} />}
                 </div>
                 <span className="text-slate-200 text-sm">Reading conversation</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 40 ? 'bg-green-500' : 'bg-slate-800'}`}>
+                  {progress >= 40 && <Check size={12} className="text-white" strokeWidth={3} />}
                 </div>
                 <span className="text-slate-200 text-sm">Detecting topics</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 55 ? 'bg-green-500' : 'bg-slate-800'}`}>
+                  {progress >= 55 && <Check size={12} className="text-white" strokeWidth={3} />}
                 </div>
                 <span className="text-slate-200 text-sm">Extracting decisions</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 70 ? 'bg-green-500' : 'bg-slate-800'}`}>
+                  {progress >= 70 && <Check size={12} className="text-white" strokeWidth={3} />}
                 </div>
                 <span className="text-slate-200 text-sm">Finding tasks</span>
               </div>
               <div className="flex items-center gap-3">
-                <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
-                  <Check size={12} className="text-white" strokeWidth={3} />
+                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 85 ? 'bg-green-500' : 'bg-slate-800'}`}>
+                  {progress >= 85 && <Check size={12} className="text-white" strokeWidth={3} />}
                 </div>
                 <span className="text-slate-200 text-sm">Identifying constraints</span>
               </div>
               <div className="flex gap-3">
-                <Circle size={20} className="text-blue-500 shrink-0" strokeWidth={2.5} />
+                {progress >= 100 ? (
+                  <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
+                    <Check size={12} className="text-white" strokeWidth={3} />
+                  </div>
+                ) : (
+                  <Circle size={20} className="text-blue-500 shrink-0" strokeWidth={2.5} />
+                )}
                 <div>
                   <p className="text-white text-sm font-medium">Building Context Package</p>
                   <p className="text-slate-500 text-xs mt-0.5">Organizing everything into a structured package.</p>

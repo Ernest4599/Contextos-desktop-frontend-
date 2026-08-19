@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Lightbulb, Sparkles, ArrowRight, ShieldCheck, Target, Check, ClipboardList, Lock, FileText } from 'lucide-react'
 
 function QuickPrompt() {
+  const navigate = useNavigate()
   const [overview, setOverview] = useState('')
   const [decisions, setDecisions] = useState('')
   const [task, setTask] = useState('')
@@ -75,6 +77,7 @@ function QuickPrompt() {
 
           <button
             type="button"
+            onClick={() => navigate('/prompt-ready')}
             className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm py-3.5 rounded-xl transition-all"
           >
             <Sparkles size={18} />
