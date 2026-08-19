@@ -1,6 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FileText, Check, Circle, Trash2, Lock, ShieldCheck, MessageSquare, ClipboardList, Shield, HelpCircle, Package, Server, Key } from 'lucide-react'
+import {
+  FileText, Check, Circle, Trash2, Lock, ShieldCheck,
+  Target, Activity, CheckCircle2, ClipboardCheck, ClipboardList,
+  Shield, HelpCircle, Key, ArrowRight, Package, Server
+} from 'lucide-react'
+
+const TOTAL_MESSAGES = 24
 
 function Processing() {
   const navigate = useNavigate()
@@ -8,6 +14,8 @@ function Processing() {
   const radius = 80
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (progress / 100) * circumference
+
+  const messagesRead = Math.min(TOTAL_MESSAGES, Math.round((Math.min(progress, 15) / 15) * TOTAL_MESSAGES))
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -30,6 +38,15 @@ function Processing() {
       return () => clearTimeout(timer)
     }
   }, [progress, navigate])
+
+  const steps = [
+    { threshold: 15, label: messagesRead < TOTAL_MESSAGES ? `Reading message ${messagesRead} of ${TOTAL_MESSAGES}...` : 'Reading conversation' },
+    { threshold: 30, label: 'Detecting topics' },
+    { threshold: 45, label: 'Extracting decisions' },
+    { threshold: 58, label: 'Finding tasks' },
+    { threshold: 70, label: 'Identifying constraints' },
+    { threshold: 85, label: 'Finding open questions & key facts' },
+  ]
 
   return (
     <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
@@ -54,15 +71,7 @@ function Processing() {
           <div className="flex items-center gap-16">
             <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
               <svg width="200" height="200" className="-rotate-90">
-                <circle
-                  cx="100"
-                  cy="100"
-                  r={radius}
-                  stroke="currentColor"
-                  strokeWidth="14"
-                  fill="none"
-                  className="text-slate-800"
-                />
+                <circle cx="100" cy="100" r={radius} stroke="currentColor" strokeWidth="14" fill="none" className="text-slate-800" />
                 <circle
                   cx="100"
                   cy="100"
@@ -82,53 +91,33 @@ function Processing() {
             </div>
 
             <div className="flex flex-col gap-4 flex-1">
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 20 ? 'bg-green-500' : 'bg-slate-800'}`}>
-                  {progress >= 20 && <Check size={12} className="text-white" strokeWidth={3} />}
+              {steps.map(({ threshold, label }) => (
+                <div key={label.startsWith('Reading') ? 'reading' : label} className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= threshold ? 'bg-green-500' : 'bg-slate-800'}`}>
+                    {progress >= threshold && <Check size={12} className="text-white" strokeWidth={3} />}
+                  </div>
+                  <span className="text-slate-200 text-sm">{label}</span>
                 </div>
-                <span className="text-slate-200 text-sm">Reading conversation</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 40 ? 'bg-green-500' : 'bg-slate-800'}`}>
-                  {progress >= 40 && <Check size={12} className="text-white" strokeWidth={3} />}
-                </div>
-                <span className="text-slate-200 text-sm">Detecting topics</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 55 ? 'bg-green-500' : 'bg-slate-800'}`}>
-                  {progress >= 55 && <Check size={12} className="text-white" strokeWidth={3} />}
-                </div>
-                <span className="text-slate-200 text-sm">Extracting decisions</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 70 ? 'bg-green-500' : 'bg-slate-800'}`}>
-                  {progress >= 70 && <Check size={12} className="text-white" strokeWidth={3} />}
-                </div>
-                <span className="text-slate-200 text-sm">Finding tasks</span>
-              </div>
-              <div className="flex items-center gap-3">
-                <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= 85 ? 'bg-green-500' : 'bg-slate-800'}`}>
-                  {progress >= 85 && <Check size={12} className="text-white" strokeWidth={3} />}
-                </div>
-                <span className="text-slate-200 text-sm">Identifying constraints</span>
-              </div>
+              ))}
+
               <div className="flex gap-3">
                 {progress >= 100 ? (
                   <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
                     <Check size={12} className="text-white" strokeWidth={3} />
                   </div>
                 ) : (
-                  <Circle size={20} className="text-blue-500 shrink-0" strokeWidth={2.5} />
+                  <Circle size={20} className={`shrink-0 ${progress >= 85 ? 'text-blue-500' : 'text-slate-700'}`} strokeWidth={2.5} />
                 )}
                 <div>
-                  <p className="text-white text-sm font-medium">Building Context Package</p>
+                  <p className={`text-sm font-medium ${progress >= 85 ? 'text-white' : 'text-slate-600'}`}>Building Context Package</p>
                   <p className="text-slate-500 text-xs mt-0.5">Organizing everything into a structured package.</p>
                 </div>
               </div>
+
               <div className="flex gap-3">
-                <Trash2 size={20} className="text-slate-600 shrink-0" />
+                <Trash2 size={20} className={`shrink-0 ${progress >= 100 ? 'text-slate-400' : 'text-slate-700'}`} />
                 <div>
-                  <p className="text-slate-500 text-sm font-medium">Deleting raw conversation...</p>
+                  <p className={`text-sm font-medium ${progress >= 100 ? 'text-slate-300' : 'text-slate-600'}`}>Deleting raw conversation...</p>
                   <p className="text-slate-600 text-xs mt-0.5">Raw conversation will be permanently deleted after processing.</p>
                 </div>
               </div>
@@ -157,100 +146,128 @@ function Processing() {
       </div>
 
       {/* Right column */}
-      <div className="w-50 shrink-0 ml-auto flex flex-col gap-4">
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2">
-          <h3 className="text-white font-semibold mb-4">Extraction Summary</h3>
+      <div className="w-56 shrink-0 ml-auto flex flex-col gap-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+          <h3 className="text-white font-semibold mb-4 text-sm">Extraction Summary</h3>
 
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <MessageSquare size={16} className="text-blue-400" />
-                <span className="text-slate-300 text-sm">Topics Detected</span>
+                <Target size={14} className="text-blue-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Goals</span>
               </div>
-              <span className="text-white text-sm font-semibold">18</span>
+              <span className="text-white text-xs font-semibold">{progress >= 30 ? 3 : 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Check size={16} className="text-green-500" />
-                <span className="text-slate-300 text-sm">Decisions Found</span>
+                <Activity size={14} className="text-cyan-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Current State</span>
               </div>
-              <span className="text-white text-sm font-semibold">12</span>
+              <span className="text-white text-xs font-semibold">{progress >= 30 ? 2 : 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ClipboardList size={16} className="text-yellow-500" />
-                <span className="text-slate-300 text-sm">Tasks Identified</span>
+                <CheckCircle2 size={14} className="text-green-500 shrink-0" />
+                <span className="text-slate-300 text-xs">Decisions</span>
               </div>
-              <span className="text-white text-sm font-semibold">8</span>
+              <span className="text-white text-xs font-semibold">{progress >= 45 ? 12 : 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Shield size={16} className="text-purple-400" />
-                <span className="text-slate-300 text-sm">Constraints Found</span>
+                <ClipboardCheck size={14} className="text-teal-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Completed Work</span>
               </div>
-              <span className="text-white text-sm font-semibold">6</span>
+              <span className="text-white text-xs font-semibold">{progress >= 58 ? 9 : 0}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <HelpCircle size={16} className="text-slate-400" />
-                <span className="text-slate-300 text-sm">Open Questions</span>
+                <ClipboardList size={14} className="text-yellow-500 shrink-0" />
+                <span className="text-slate-300 text-xs">Tasks</span>
               </div>
-              <span className="text-white text-sm font-semibold">3</span>
+              <span className="text-white text-xs font-semibold">{progress >= 58 ? 8 : 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Shield size={14} className="text-purple-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Constraints</span>
+              </div>
+              <span className="text-white text-xs font-semibold">{progress >= 70 ? 6 : 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Key size={14} className="text-orange-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Key Facts</span>
+              </div>
+              <span className="text-white text-xs font-semibold">{progress >= 85 ? 7 : 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <HelpCircle size={14} className="text-slate-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Open Questions</span>
+              </div>
+              <span className="text-white text-xs font-semibold">{progress >= 85 ? 3 : 0}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ArrowRight size={14} className="text-red-400 shrink-0" />
+                <span className="text-slate-300 text-xs">Next Action</span>
+              </div>
+              <span className="text-white text-xs font-semibold">{progress >= 85 ? 1 : 0}</span>
             </div>
           </div>
 
-          <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-800">
-            <span className="text-blue-400 text-sm font-medium">Total Items Extracted</span>
-            <span className="text-blue-400 text-sm font-bold">47</span>
-          </div>
-        </div>
-
-        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-2">
-          <h3 className="text-white font-semibold mb-4">Privacy Status</h3>
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ShieldCheck size={16} className="text-green-500" />
-                <span className="text-slate-300 text-sm">Processing</span>
-              </div>
-              <span className="text-green-500 text-sm font-medium">Local Only</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Trash2 size={16} className="text-yellow-500" />
-                <span className="text-slate-300 text-sm">Raw Conversation</span>
-              </div>
-              <span className="text-yellow-500 text-sm font-medium">Temporary</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Server size={16} className="text-slate-400" />
-                <span className="text-slate-300 text-sm">Stored on Server</span>
-              </div>
-              <span className="text-slate-200 text-sm font-medium">No</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Package size={16} className="text-blue-400" />
-                <span className="text-slate-300 text-sm">Context Package</span>
-              </div>
-              <span className="text-blue-400 text-sm font-medium">Building</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Key size={16} className="text-green-500" />
-                <span className="text-slate-300 text-sm">Encryption</span>
-              </div>
-              <span className="text-green-500 text-sm font-medium">AES-256</span>
-            </div>
+          <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-800">
+            <span className="text-blue-400 text-xs font-medium">Total Items</span>
+            <span className="text-blue-400 text-xs font-bold">{progress >= 85 ? 51 : 0}</span>
           </div>
         </div>
 
-        <div className="border border-blue-600/30 bg-blue-600/5 rounded-2xl p-4">
+        <div className="bg-slate-900 border border-slate-800 rounded-2xl p-3">
+          <h3 className="text-white font-semibold mb-4 text-sm">Privacy Status</h3>
+
+          <div className="flex flex-col gap-2.5">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ShieldCheck size={14} className="text-green-500" />
+                <span className="text-slate-300 text-xs">Processing</span>
+              </div>
+              <span className="text-green-500 text-xs font-medium">Local Only</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Trash2 size={14} className="text-yellow-500" />
+                <span className="text-slate-300 text-xs">Raw Conversation</span>
+              </div>
+              <span className="text-yellow-500 text-xs font-medium">Temporary</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Server size={14} className="text-slate-400" />
+                <span className="text-slate-300 text-xs">Stored on Server</span>
+              </div>
+              <span className="text-slate-200 text-xs font-medium">No</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Package size={14} className="text-blue-400" />
+                <span className="text-slate-300 text-xs">Context Package</span>
+              </div>
+              <span className="text-blue-400 text-xs font-medium">{progress >= 100 ? 'Ready' : 'Building'}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Key size={14} className="text-green-500" />
+                <span className="text-slate-300 text-xs">Encryption</span>
+              </div>
+              <span className="text-green-500 text-xs font-medium">AES-256</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="border border-blue-600/30 bg-blue-600/5 rounded-2xl p-3">
           <div className="flex items-center gap-2 mb-2">
-            <Shield size={16} className="text-blue-400" />
-            <h4 className="text-blue-400 font-semibold text-sm">Your privacy is our priority</h4>
+            <Shield size={14} className="text-blue-400" />
+            <h4 className="text-blue-400 font-semibold text-xs">Your privacy is our priority</h4>
           </div>
           <p className="text-blue-400/70 text-xs leading-relaxed">
             We process everything locally and delete raw conversations after processing.
