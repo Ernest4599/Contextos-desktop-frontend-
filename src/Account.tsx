@@ -1,0 +1,155 @@
+import { useState } from 'react'
+import { User, Mail, Lock, Eye, UserPlus, LogIn, ShieldCheck, Laptop, Info, ArrowRight, Check } from 'lucide-react'
+
+type Tab = 'signin' | 'create'
+
+function Account() {
+  const [tab, setTab] = useState<Tab>('signin')
+  const [showPassword, setShowPassword] = useState(false)
+
+  return (
+    <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
+      {/* Center column */}
+      <div className="flex-1 max-w-2xl">
+        <h1 className="text-3xl font-bold text-white mb-2">Account</h1>
+        <p className="text-slate-400 mb-8">Optional — ContextOS works without an account.</p>
+
+        <div className="flex flex-col items-center text-center mb-8">
+          <div className="w-16 h-16 rounded-full border-2 border-blue-500 flex items-center justify-center mb-4">
+            <User size={28} className="text-blue-400" />
+          </div>
+          <h2 className="text-white text-2xl font-bold mb-3">Optional account</h2>
+          <p className="text-slate-400 text-sm max-w-md">
+            Signing in isn't required — ContextOS fully works with just a device license. Create an account only if you want your{' '}
+            <span className="text-blue-400">Projects</span> and <span className="text-blue-400">Packages</span> to sync across devices.
+          </p>
+        </div>
+
+        <div className="flex border border-slate-800 rounded-xl p-1 mb-6">
+          <button
+            type="button"
+            onClick={() => setTab('signin')}
+            className={`flex-1 flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-colors ${
+              tab === 'signin' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <LogIn size={16} />
+            Sign In
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab('create')}
+            className={`flex-1 flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-colors ${
+              tab === 'create' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
+            }`}
+          >
+            <UserPlus size={16} />
+            Create Account
+          </button>
+        </div>
+
+        <div className="mb-5">
+          <label className="text-white text-sm font-medium block mb-2">Email</label>
+          <div className="relative">
+            <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              type="email"
+              placeholder="you@example.com"
+              className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-11 pr-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <label className="text-white text-sm font-medium block mb-2">Password</label>
+          <div className="relative">
+            <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+            <input
+              type={showPassword ? 'text' : 'password'}
+              placeholder="At least 8 characters"
+              className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-11 pr-11 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+            >
+              <Eye size={16} />
+            </button>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors"
+        >
+          {tab === 'signin' ? 'Sign In' : 'Create Account'}
+          <ArrowRight size={16} />
+        </button>
+
+        {tab === 'signin' && (
+          <button
+            type="button"
+            className="w-full text-blue-400 text-sm font-medium py-3 mt-2 hover:text-blue-300 transition-colors"
+          >
+            Forgot Password?
+          </button>
+        )}
+
+        <div className="flex items-center justify-between border border-blue-600/30 bg-blue-600/5 rounded-xl px-5 py-4 mt-6">
+          <div className="flex items-start gap-3">
+            <Info size={18} className="text-blue-400 mt-0.5 shrink-0" />
+            <div>
+              <p className="text-blue-400 text-sm font-semibold">No account required</p>
+              <p className="text-slate-400 text-sm mt-0.5">You can continue using ContextOS completely offline with full privacy.</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            className="flex items-center gap-1.5 border border-slate-700 text-slate-300 text-xs font-medium px-3 py-2 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
+          >
+            Learn more
+            <ArrowRight size={12} />
+          </button>
+        </div>
+      </div>
+
+      {/* Right column */}
+      <div className="w-72 shrink-0 ml-auto">
+        <div className="border border-slate-800 rounded-2xl p-6">
+          <div className="flex flex-col items-center text-center mb-5">
+            <div className="w-12 h-12 rounded-full bg-green-600/10 flex items-center justify-center mb-3">
+              <ShieldCheck size={22} className="text-green-500" />
+            </div>
+            <h3 className="text-white font-bold">Your data stays private</h3>
+          </div>
+
+          <div className="flex flex-col gap-3 mb-5">
+            <div className="flex items-start gap-2">
+              <Check size={16} className="text-green-500 mt-0.5 shrink-0" />
+              <span className="text-slate-300 text-sm">All data is stored locally on your device</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Check size={16} className="text-green-500 mt-0.5 shrink-0" />
+              <span className="text-slate-300 text-sm">No conversations are stored or sent to our servers</span>
+            </div>
+            <div className="flex items-start gap-2">
+              <Check size={16} className="text-green-500 mt-0.5 shrink-0" />
+              <span className="text-slate-300 text-sm">You're in control — always</span>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 pt-5 border-t border-slate-800">
+            <Laptop size={18} className="text-slate-400 mt-0.5 shrink-0" />
+            <div>
+              <p className="text-white text-sm font-medium">Local-first by design</p>
+              <p className="text-slate-500 text-xs mt-0.5">ContextOS is built to keep you in control of your data.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default Account

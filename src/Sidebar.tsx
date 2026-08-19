@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import { Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown } from 'lucide-react'
 import Logo from './Logo'
 
@@ -12,6 +12,8 @@ const navItems = [
 ]
 
 function Sidebar() {
+  const navigate = useNavigate()
+
   return (
     <aside className="w-64 bg-slate-950 border-r border-slate-800 h-screen flex flex-col p-4 overflow-y-auto">
       <div className="flex items-center gap-2 mb-8 px-2">
@@ -69,6 +71,7 @@ function Sidebar() {
       <div className="mt-auto pt-4 border-t border-slate-800">
         <button
           type="button"
+          onClick={() => navigate('/account')}
           className="flex items-center gap-3 px-2 py-2 w-full rounded-lg hover:bg-slate-800 transition-colors"
         >
           <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
