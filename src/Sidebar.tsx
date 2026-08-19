@@ -3,7 +3,7 @@ import { Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown 
 import Logo from './Logo'
 
 const navItems = [
-  { to: '/', label: 'Home', icon: Home },
+  { to: '/home', label: 'Home', icon: Home },
   { to: '/quick-prompt', label: 'Quick Prompt', icon: Zap },
   { to: '/projects', label: 'Projects', icon: Folder },
   { to: '/import', label: 'Import', icon: Upload },
