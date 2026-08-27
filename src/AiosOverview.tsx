@@ -91,6 +91,7 @@ function AiosOverview() {
 
   const categories = overview?.categories || {}
   const recent = overview?.recent_memories || []
+  const categoryCount = Object.keys(categories).length
   const strength = overview?.identity_strength
 
   return (
@@ -170,6 +171,28 @@ function AiosOverview() {
 
         {!loading && !loadError && (
           <div className="w-80 shrink-0 flex flex-col gap-6">
+            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+              <h2 className="text-white font-medium mb-4">AIOS Summary</h2>
+              <div className="flex flex-col gap-3 text-sm">
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Total Memories</span>
+                  <span className="text-white font-medium">{overview?.total_memories ?? 0}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Categories</span>
+                  <span className="text-white font-medium">{categoryCount}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Last Updated</span>
+                  <span className="text-white font-medium">{formatRelativeTime(overview?.last_updated) || '—'}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-slate-400">Conversations Used</span>
+                  <span className="text-white font-medium">{overview?.conversations_used ?? 0}</span>
+                </div>
+              </div>
+            </div>
+
             {strength && (
               <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
                 <h2 className="text-white font-medium mb-4">Identity Strength</h2>
