@@ -92,12 +92,16 @@ function Processing() {
       }
     }
 
+    const handleFailure = (err: unknown) => {
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach the server')
+    }
+
     if (state.method === 'link') {
-      streamProcessShareLink(state.url, onEvent)
+      streamProcessShareLink(state.url, onEvent).catch(handleFailure)
     } else if (state.method === 'paste') {
-      streamProcessPaste(state.text, onEvent)
+      streamProcessPaste(state.text, onEvent).catch(handleFailure)
     } else if (state.method === 'upload') {
-      streamProcessUpload(state.file, onEvent)
+      streamProcessUpload(state.file, onEvent).catch(handleFailure)
     }
   }, [state, navigate])
 
