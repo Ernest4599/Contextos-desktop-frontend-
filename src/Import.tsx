@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Info, Link2, Clipboard, UploadCloud, FileText, Lock, ShieldCheck } from 'lucide-react'
 
 type ImportMethod = 'link' | 'paste' | 'upload' | null
@@ -7,6 +7,25 @@ type ImportMethod = 'link' | 'paste' | 'upload' | null
 function Import() {
   const navigate = useNavigate()
   const [activeMethod, setActiveMethod] = useState<ImportMethod>(null)
+  const [linkValue, setLinkValue] = useState('')
+  const [pasteValue, setPasteValue] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
+  const canAnalyze =
+    (activeMethod === 'link' && linkValue.trim() !== '') ||
+    (activeMethod === 'paste' && pasteValue.trim() !== '') ||
+    (activeMethod === 'upload' && file !== null)
+
+  const handleAnalyze = () => {
+    if (activeMethod === 'link') {
+      navigate('/processing', { state: { method: 'link', url: linkValue.trim() } })
+    } else if (activeMethod === 'paste') {
+      navigate('/processing', { state: { method: 'paste', text: pasteValue } })
+    } else if (activeMethod === 'upload' && file) {
+      navigate('/processing', { state: { method: 'upload', file } })
+    }
+  }
 
   return (
     <div className="flex-1 p-8 h-screen overflow-y-auto">
@@ -99,6 +118,8 @@ function Import() {
                 <h3 className="text-white font-semibold mb-3">Paste your share link</h3>
                 <input
                   type="url"
+                  value={linkValue}
+                  onChange={(e) => setLinkValue(e.target.value)}
                   placeholder="https://chat.openai.com/share/..."
                   className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
                 />
@@ -110,6 +131,8 @@ function Import() {
                 <h3 className="text-white font-semibold mb-3">Paste your conversation</h3>
                 <textarea
                   rows={8}
+                  value={pasteValue}
+                  onChange={(e) => setPasteValue(e.target.value)}
                   placeholder="Paste the full conversation text here..."
                   className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 resize-none"
                 />
@@ -117,10 +140,22 @@ function Import() {
             )}
 
             {activeMethod === 'upload' && (
-              <div className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-14 px-8 cursor-pointer">
+              <div
+                onClick={() => fileInputRef.current?.click()}
+                className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-14 px-8 cursor-pointer"
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".txt,.md,.html,.json"
+                  className="hidden"
+                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                />
                 <FileText size={32} className="text-slate-500 mb-4" />
-                <h3 className="text-white font-semibold mb-1">Drag & drop your file here</h3>
-                <p className="text-slate-400 text-sm mb-5">or click to browse</p>
+                <h3 className="text-white font-semibold mb-1">
+                  {file ? file.name : 'Drag & drop your file here'}
+                </h3>
+                <p className="text-slate-400 text-sm mb-5">{file ? 'Click to change' : 'or click to browse'}</p>
                 <div className="flex gap-2">
                   <span className="border border-slate-700 text-slate-400 text-xs px-3 py-1.5 rounded-lg">.txt</span>
                   <span className="border border-slate-700 text-slate-400 text-xs px-3 py-1.5 rounded-lg">.md</span>
@@ -135,10 +170,13 @@ function Import() {
 
       <button
         type="button"
-        onClick={() => navigate('/processing')}
+        disabled={!canAnalyze}
+        onClick={handleAnalyze}
         className={`w-full mt-6 text-white font-semibold text-sm py-3.5 rounded-xl transition-all ${
           activeMethod
-            ? 'bg-blue-600 hover:bg-blue-700 opacity-100 pointer-events-auto'
+            ? canAnalyze
+              ? 'bg-blue-600 hover:bg-blue-700 opacity-100 pointer-events-auto'
+              : 'bg-blue-600 opacity-50 pointer-events-none'
             : 'bg-blue-600 opacity-0 pointer-events-none'
         }`}
       >

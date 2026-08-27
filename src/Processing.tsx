@@ -1,51 +1,121 @@
-import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   FileText, Check, Circle, Trash2, Lock, ShieldCheck,
   Target, Activity, CheckCircle2, ClipboardCheck, ClipboardList,
   Shield, HelpCircle, Key, ArrowRight, Package, Server
 } from 'lucide-react'
+import { streamProcessPaste, streamProcessShareLink, streamProcessUpload } from './lib/api'
 
-const TOTAL_MESSAGES = 24
+type LocationState =
+  | { method: 'link'; url: string }
+  | { method: 'paste'; text: string }
+  | { method: 'upload'; file: File }
+
+type Counts = {
+  goals: number
+  current_state: number
+  decisions: number
+  completed_work: number
+  tasks: number
+  constraints: number
+  key_facts: number
+  open_questions: number
+  next_action: number
+}
+
+const STEP_ORDER = [
+  'reading_conversation',
+  'detecting_topics',
+  'extracting_decisions',
+  'finding_tasks',
+  'identifying_constraints',
+  'finding_open_questions',
+  'next_action',
+  'building_context_package',
+  'deleting_raw_conversation',
+] as const
 
 function Processing() {
   const navigate = useNavigate()
-  const [progress, setProgress] = useState(0)
+  const location = useLocation()
+  const state = location.state as LocationState | null
+
+  const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set())
+  const [readingProgress, setReadingProgress] = useState({ current: 0, total: 0 })
+  const [counts, setCounts] = useState<Counts>({
+    goals: 0, current_state: 0, decisions: 0, completed_work: 0,
+    tasks: 0, constraints: 0, key_facts: 0, open_questions: 0, next_action: 0,
+  })
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const startedRef = useRef(false)
+
+  const stepIndex = completedSteps.size
+  const progress = Math.min(100, Math.round((stepIndex / STEP_ORDER.length) * 100))
   const radius = 80
   const circumference = 2 * Math.PI * radius
   const offset = circumference - (progress / 100) * circumference
 
-  const messagesRead = Math.min(TOTAL_MESSAGES, Math.round((Math.min(progress, 15) / 15) * TOTAL_MESSAGES))
-
   useEffect(() => {
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          return 100
-        }
-        return prev + 2
-      })
-    }, 60)
-    return () => clearInterval(interval)
-  }, [])
+    if (!state || startedRef.current) return
+    startedRef.current = true
 
-  useEffect(() => {
-    if (progress === 100) {
-      const timer = setTimeout(() => {
-        navigate('/context-ready')
-      }, 600)
-      return () => clearTimeout(timer)
+    const onEvent = (evt: { event: string; data: any }) => {
+      if (evt.event === 'progress' && evt.data.step === 'reading_conversation') {
+        setReadingProgress({ current: evt.data.current, total: evt.data.total })
+      } else if (evt.event === 'step' && evt.data.status === 'complete') {
+        setCompletedSteps((prev) => new Set(prev).add(evt.data.step))
+
+        setCounts((prev) => ({
+          ...prev,
+          goals: evt.data.goals ?? prev.goals,
+          current_state: evt.data.current_state ?? prev.current_state,
+          decisions: evt.data.decisions ?? prev.decisions,
+          completed_work: evt.data.completed_work ?? prev.completed_work,
+          tasks: evt.data.tasks ?? prev.tasks,
+          constraints: evt.data.constraints ?? prev.constraints,
+          key_facts: evt.data.key_facts ?? prev.key_facts,
+          open_questions: evt.data.open_questions ?? prev.open_questions,
+          next_action: evt.data.next_action ? 1 : prev.next_action,
+        }))
+      } else if (evt.event === 'complete') {
+        setTimeout(() => {
+          navigate('/context-ready', {
+            state: {
+              contextPackage: evt.data.context_package,
+              summary: evt.data.extraction_summary,
+            },
+          })
+        }, 500)
+      } else if (evt.event === 'error') {
+        setErrorMsg(evt.data.message)
+      }
     }
-  }, [progress, navigate])
+
+    if (state.method === 'link') {
+      streamProcessShareLink(state.url, onEvent)
+    } else if (state.method === 'paste') {
+      streamProcessPaste(state.text, onEvent)
+    } else if (state.method === 'upload') {
+      streamProcessUpload(state.file, onEvent)
+    }
+  }, [state, navigate])
+
+  const isDone = (step: string) => completedSteps.has(step)
+  const totalItems = Object.values(counts).reduce((a, b) => a + b, 0)
+
+  const readingLabel =
+    readingProgress.total > 0 && !isDone('reading_conversation')
+      ? `Reading message ${readingProgress.current} of ${readingProgress.total}...`
+      : 'Reading conversation'
 
   const steps = [
-    { threshold: 15, label: messagesRead < TOTAL_MESSAGES ? `Reading message ${messagesRead} of ${TOTAL_MESSAGES}...` : 'Reading conversation' },
-    { threshold: 30, label: 'Detecting topics' },
-    { threshold: 45, label: 'Extracting decisions' },
-    { threshold: 58, label: 'Finding tasks' },
-    { threshold: 70, label: 'Identifying constraints' },
-    { threshold: 85, label: 'Finding open questions & key facts' },
+    { key: 'reading_conversation', label: readingLabel },
+    { key: 'detecting_topics', label: 'Detecting topics' },
+    { key: 'extracting_decisions', label: 'Extracting decisions' },
+    { key: 'finding_tasks', label: 'Finding tasks' },
+    { key: 'identifying_constraints', label: 'Identifying constraints' },
+    { key: 'finding_open_questions', label: 'Finding open questions & key facts' },
   ]
 
   return (
@@ -68,6 +138,12 @@ function Processing() {
           <h2 className="text-white text-xl font-semibold mb-1">Analyzing your conversation...</h2>
           <p className="text-slate-400 text-sm mb-8">This will only take a few seconds.</p>
 
+          {errorMsg && (
+            <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
+              {errorMsg}
+            </div>
+          )}
+
           <div className="flex items-center gap-16">
             <div className="relative shrink-0" style={{ width: 200, height: 200 }}>
               <svg width="200" height="200" className="-rotate-90">
@@ -82,7 +158,7 @@ function Processing() {
                   strokeDasharray={circumference}
                   strokeDashoffset={offset}
                   strokeLinecap="round"
-                  className="text-blue-500 transition-all duration-100"
+                  className="text-blue-500 transition-all duration-300"
                 />
               </svg>
               <div className="absolute inset-0 flex items-center justify-center">
@@ -91,33 +167,33 @@ function Processing() {
             </div>
 
             <div className="flex flex-col gap-4 flex-1">
-              {steps.map(({ threshold, label }) => (
-                <div key={label.startsWith('Reading') ? 'reading' : label} className="flex items-center gap-3">
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${progress >= threshold ? 'bg-green-500' : 'bg-slate-800'}`}>
-                    {progress >= threshold && <Check size={12} className="text-white" strokeWidth={3} />}
+              {steps.map(({ key, label }) => (
+                <div key={key} className="flex items-center gap-3">
+                  <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${isDone(key) ? 'bg-green-500' : 'bg-slate-800'}`}>
+                    {isDone(key) && <Check size={12} className="text-white" strokeWidth={3} />}
                   </div>
                   <span className="text-slate-200 text-sm">{label}</span>
                 </div>
               ))}
 
               <div className="flex gap-3">
-                {progress >= 100 ? (
+                {isDone('building_context_package') ? (
                   <div className="w-5 h-5 rounded-full bg-green-500 flex items-center justify-center shrink-0">
                     <Check size={12} className="text-white" strokeWidth={3} />
                   </div>
                 ) : (
-                  <Circle size={20} className={`shrink-0 ${progress >= 85 ? 'text-blue-500' : 'text-slate-700'}`} strokeWidth={2.5} />
+                  <Circle size={20} className={`shrink-0 ${isDone('next_action') ? 'text-blue-500' : 'text-slate-700'}`} strokeWidth={2.5} />
                 )}
                 <div>
-                  <p className={`text-sm font-medium ${progress >= 85 ? 'text-white' : 'text-slate-600'}`}>Building Context Package</p>
+                  <p className={`text-sm font-medium ${isDone('next_action') ? 'text-white' : 'text-slate-600'}`}>Building Context Package</p>
                   <p className="text-slate-500 text-xs mt-0.5">Organizing everything into a structured package.</p>
                 </div>
               </div>
 
               <div className="flex gap-3">
-                <Trash2 size={20} className={`shrink-0 ${progress >= 100 ? 'text-slate-400' : 'text-slate-700'}`} />
+                <Trash2 size={20} className={`shrink-0 ${isDone('deleting_raw_conversation') ? 'text-slate-400' : 'text-slate-700'}`} />
                 <div>
-                  <p className={`text-sm font-medium ${progress >= 100 ? 'text-slate-300' : 'text-slate-600'}`}>Deleting raw conversation...</p>
+                  <p className={`text-sm font-medium ${isDone('deleting_raw_conversation') ? 'text-slate-300' : 'text-slate-600'}`}>Deleting raw conversation...</p>
                   <p className="text-slate-600 text-xs mt-0.5">Raw conversation will be permanently deleted after processing.</p>
                 </div>
               </div>
@@ -156,69 +232,69 @@ function Processing() {
                 <Target size={14} className="text-blue-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Goals</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 30 ? 3 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.goals}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Activity size={14} className="text-cyan-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Current State</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 30 ? 2 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.current_state}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle2 size={14} className="text-green-500 shrink-0" />
                 <span className="text-slate-300 text-xs">Decisions</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 45 ? 12 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.decisions}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ClipboardCheck size={14} className="text-teal-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Completed Work</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 58 ? 9 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.completed_work}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ClipboardList size={14} className="text-yellow-500 shrink-0" />
                 <span className="text-slate-300 text-xs">Tasks</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 58 ? 8 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.tasks}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Shield size={14} className="text-purple-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Constraints</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 70 ? 6 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.constraints}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <Key size={14} className="text-orange-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Key Facts</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 85 ? 7 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.key_facts}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <HelpCircle size={14} className="text-slate-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Open Questions</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 85 ? 3 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.open_questions}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <ArrowRight size={14} className="text-red-400 shrink-0" />
                 <span className="text-slate-300 text-xs">Next Action</span>
               </div>
-              <span className="text-white text-xs font-semibold">{progress >= 85 ? 1 : 0}</span>
+              <span className="text-white text-xs font-semibold">{counts.next_action}</span>
             </div>
           </div>
 
           <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-800">
             <span className="text-blue-400 text-xs font-medium">Total Items</span>
-            <span className="text-blue-400 text-xs font-bold">{progress >= 85 ? 51 : 0}</span>
+            <span className="text-blue-400 text-xs font-bold">{totalItems}</span>
           </div>
         </div>
 
@@ -252,7 +328,7 @@ function Processing() {
                 <Package size={14} className="text-blue-400" />
                 <span className="text-slate-300 text-xs">Context Package</span>
               </div>
-              <span className="text-blue-400 text-xs font-medium">{progress >= 100 ? 'Ready' : 'Building'}</span>
+              <span className="text-blue-400 text-xs font-medium">{isDone('building_context_package') ? 'Ready' : 'Building'}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">

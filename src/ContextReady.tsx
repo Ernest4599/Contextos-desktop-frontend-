@@ -1,14 +1,22 @@
 import { useState } from 'react'
+import { useLocation, Navigate } from 'react-router-dom'
 import { MessageSquare, Check, Clock, Copy, ShieldCheck, Info } from 'lucide-react'
+
+type LocationState = {
+  contextPackage: string
+  summary: Record<string, number>
+}
 
 function ContextReady() {
   const [copied, setCopied] = useState(false)
+  const location = useLocation()
+  const state = location.state as LocationState | null
 
-  const generatedText = `Please continue from where we left off. Here is the full context of our previous conversation:
+  if (!state?.contextPackage) {
+    return <Navigate to="/import" replace />
+  }
 
-[Full context and key details will appear here...]
-
-Continue seamlessly with full understanding.`
+  const generatedText = state.contextPackage
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedText)
@@ -37,7 +45,7 @@ Continue seamlessly with full understanding.`
           <p className="text-slate-400 mb-5">Your prompt is ready to paste into any AI chat.</p>
           <span className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm px-4 py-2 rounded-full">
             <Clock size={14} />
-            Generated in 8.5 seconds
+            {state.summary?.total_items_extracted ?? 0} items extracted
           </span>
         </div>
 
