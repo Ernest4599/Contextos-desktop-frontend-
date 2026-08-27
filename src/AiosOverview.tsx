@@ -37,6 +37,18 @@ function formatRelativeTime(iso: string | null | undefined): string {
   return date.toLocaleDateString()
 }
 
+function strengthColor(label: string | undefined): string {
+  if (label === 'Strong') return 'text-green-400'
+  if (label === 'Growing') return 'text-yellow-400'
+  return 'text-slate-400'
+}
+
+function strengthDescription(label: string | undefined): string {
+  if (label === 'Strong') return 'AIOS has a strong understanding of you.'
+  if (label === 'Growing') return 'AIOS is starting to understand you. Keep adding to build it out.'
+  return "AIOS doesn't know much about you yet. Tell it more."
+}
+
 function AiosOverview() {
   const navigate = useNavigate()
   const [input, setInput] = useState('')
@@ -79,6 +91,7 @@ function AiosOverview() {
 
   const categories = overview?.categories || {}
   const recent = overview?.recent_memories || []
+  const strength = overview?.identity_strength
 
   return (
     <div className="flex-1 p-8 overflow-y-auto">
@@ -157,6 +170,17 @@ function AiosOverview() {
 
         {!loading && !loadError && (
           <div className="w-80 shrink-0 flex flex-col gap-6">
+            {strength && (
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+                <h2 className="text-white font-medium mb-4">Identity Strength</h2>
+                <div className="text-center">
+                  <div className="text-3xl font-semibold text-white">{strength.score}%</div>
+                  <p className={`text-sm font-medium mt-1 ${strengthColor(strength.label)}`}>{strength.label}</p>
+                  <p className="text-slate-500 text-xs mt-3">{strengthDescription(strength.label)}</p>
+                </div>
+              </div>
+            )}
+
             <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-white font-medium">Recent Memories</h2>
