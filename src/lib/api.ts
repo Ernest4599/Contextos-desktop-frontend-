@@ -260,3 +260,67 @@ export async function deleteAiosMemory(memoryId: number) {
   })
   return resp.json()
 }
+
+
+export type AiosQuickPromptResult = {
+  success: boolean
+  prompt?: string
+  error?: string
+}
+
+export async function apiAiosQuickPrompt(message: string): Promise<AiosQuickPromptResult> {
+  const token = getStoredToken()
+  const resp = await fetch(`${API_BASE_URL}/aios/quick-prompt`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ message }),
+  })
+  return resp.json()
+}
+
+
+// --- Projects ---
+
+export type Project = {
+  id: number
+  name: string
+  created_at?: string
+  updated_at?: string
+}
+
+export type ProjectsResult = {
+  success: boolean
+  projects?: Project[]
+  error?: string
+}
+
+export type ProjectResult = {
+  success: boolean
+  project?: Project
+  error?: string
+}
+
+export async function getProjects(): Promise<ProjectsResult> {
+  const resp = await fetch(`${API_BASE_URL}/projects`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function createProject(name: string): Promise<ProjectResult> {
+  const resp = await fetch(`${API_BASE_URL}/projects`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify({ name }),
+  })
+  return resp.json()
+}
+
+export async function deleteProject(projectId: number): Promise<{ success: boolean; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/projects/${projectId}`, {
+    method: "DELETE",
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
