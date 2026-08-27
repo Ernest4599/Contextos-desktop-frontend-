@@ -1,5 +1,6 @@
+import { useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { Lightbulb } from 'lucide-react'
+import { Lightbulb, Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
 import Landing from './Landing'
 import Home from './Home'
@@ -13,9 +14,13 @@ import Account from './Account'
 import ContextReady from './ContextReady'
 import PromptReady from './PromptReady'
 import RequireAuth from './RequireAuth'
+import AiosOverview from './AiosOverview'
+import AiosMemories from './AiosMemories'
 
 function DashboardLayout() {
   const location = useLocation()
+  const isAiosRoute = location.pathname.startsWith('/aios')
+  const [aiosSidebarOpen, setAiosSidebarOpen] = useState(false)
 
   const tipExtra =
     location.pathname === '/prompt-ready' ? (
@@ -28,21 +33,55 @@ function DashboardLayout() {
       </div>
     ) : undefined
 
+  const routesElement = (
+    <Routes>
+      <Route path="/home" element={<Home />} />
+      <Route path="/quick-prompt" element={<QuickPrompt />} />
+      <Route path="/projects" element={<RequireAuth featureName="Projects"><Projects /></RequireAuth>} />
+      <Route path="/aios" element={<RequireAuth featureName="AIOS"><AiosOverview /></RequireAuth>} />
+      <Route path="/aios/memories" element={<RequireAuth featureName="AIOS"><AiosMemories /></RequireAuth>} />
+      <Route path="/import" element={<Import />} />
+      <Route path="/processing" element={<Processing />} />
+      <Route path="/package" element={<Package />} />
+      <Route path="/settings" element={<Settings />} />
+      <Route path="/account" element={<Account />} />
+      <Route path="/context-ready" element={<ContextReady />} />
+      <Route path="/prompt-ready" element={<PromptReady />} />
+    </Routes>
+  )
+
+  if (isAiosRoute) {
+    return (
+      <div className="flex bg-slate-900 min-h-screen relative">
+        {aiosSidebarOpen ? (
+          <>
+            <div
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setAiosSidebarOpen(false)}
+            />
+            <div className="fixed left-0 top-0 z-50 h-screen">
+              <Sidebar extra={tipExtra} />
+            </div>
+          </>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setAiosSidebarOpen(true)}
+            aria-label="Open sidebar"
+            className="w-12 h-screen bg-slate-950 border-r border-slate-800 flex items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
+          >
+            <Menu size={20} className="text-slate-400" />
+          </button>
+        )}
+        <div className="flex-1">{routesElement}</div>
+      </div>
+    )
+  }
+
   return (
     <div className="flex bg-slate-900 min-h-screen">
       <Sidebar extra={tipExtra} />
-      <Routes>
-        <Route path="/home" element={<Home />} />
-        <Route path="/quick-prompt" element={<QuickPrompt />} />
-        <Route path="/projects" element={<RequireAuth featureName="Projects"><Projects /></RequireAuth>} />
-        <Route path="/import" element={<Import />} />
-        <Route path="/processing" element={<Processing />} />
-        <Route path="/package" element={<Package />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/context-ready" element={<ContextReady />} />
-        <Route path="/prompt-ready" element={<PromptReady />} />
-      </Routes>
+      {routesElement}
     </div>
   )
 }

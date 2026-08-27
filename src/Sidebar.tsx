@@ -1,5 +1,9 @@
-import { NavLink, useNavigate } from 'react-router-dom'
-import { Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown } from 'lucide-react'
+import { useState } from 'react'
+import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
+import {
+  Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown,
+  Sparkles, Brain, User, Sliders, BookOpen, Target,
+} from 'lucide-react'
 import type { ReactNode } from 'react'
 import Logo from './Logo'
 
@@ -7,13 +11,41 @@ const navItems = [
   { to: '/home', label: 'Home', icon: Home },
   { to: '/quick-prompt', label: 'Quick Prompt', icon: Zap },
   { to: '/projects', label: 'Projects', icon: Folder },
+]
+
+const bottomNavItems = [
   { to: '/import', label: 'Import', icon: Upload },
   { to: '/package', label: 'Package', icon: Package },
   { to: '/settings', label: 'Setting', icon: Settings },
 ]
 
+const aiosTopItems = [
+  { to: '/aios', label: 'Overview', icon: Sparkles, end: true },
+  { to: '/aios/memories', label: 'Memory', icon: Brain, end: true },
+]
+
+const aiosCategoryItems = [
+  { category: 'personality', label: 'Personality', icon: User },
+  { category: 'preference', label: 'Preferences', icon: Sliders },
+  { category: 'knowledge', label: 'Knowledge', icon: BookOpen },
+  { category: 'goal', label: 'Goals', icon: Target },
+]
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    isActive
+      ? 'bg-blue-600/20 text-blue-400'
+      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+  }`
+
 function Sidebar({ extra }: { extra?: ReactNode }) {
   const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const isAiosRoute = location.pathname.startsWith('/aios')
+  const isAiosMemoriesRoute = location.pathname === '/aios/memories'
+  const activeCategory = searchParams.get('category') || ''
+  const [aiosOpen, setAiosOpen] = useState(isAiosRoute)
 
   return (
     <aside className="w-64 bg-slate-950 border-r border-slate-800 h-screen flex flex-col p-4 overflow-y-auto">
@@ -27,17 +59,58 @@ function Sidebar({ extra }: { extra?: ReactNode }) {
 
       <nav className="flex flex-col gap-1">
         {navItems.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-blue-600/20 text-blue-400'
-                  : 'text-slate-400 hover:bg-slate-800 hover:text-white'
-              }`
-            }
-          >
+          <NavLink key={to} to={to} className={navLinkClass}>
+            <Icon size={18} />
+            {label}
+          </NavLink>
+        ))}
+
+        <button
+          type="button"
+          onClick={() => setAiosOpen((o) => !o)}
+          className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors w-full ${
+            isAiosRoute ? 'bg-blue-600/20 text-blue-400' : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+          }`}
+          aria-expanded={aiosOpen}
+        >
+          <span className="flex items-center gap-3">
+            <Sparkles size={18} />
+            AIOS
+            <span className="text-[10px] leading-none bg-blue-600 text-white rounded px-1.5 py-0.5">NEW</span>
+          </span>
+          <ChevronDown size={16} className={`transition-transform ${aiosOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        {aiosOpen && (
+          <div className="ml-4 flex flex-col gap-1 border-l border-slate-800 pl-3">
+            {aiosTopItems.map(({ to, label, icon: Icon, end }) => (
+              <NavLink key={to} to={to} end={end} className={navLinkClass}>
+                <Icon size={16} />
+                {label}
+              </NavLink>
+            ))}
+            {aiosCategoryItems.map(({ category, label, icon: Icon }) => {
+              const isActive = isAiosMemoriesRoute && activeCategory === category
+              return (
+                <Link
+                  key={category}
+                  to={`/aios/memories?category=${category}`}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive
+                      ? 'bg-blue-600/20 text-blue-400'
+                      : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                  }`}
+                >
+                  <Icon size={16} />
+                  {label}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+
+        {bottomNavItems.map(({ to, label, icon: Icon }) => (
+          <NavLink key={to} to={to} className={navLinkClass}>
             <Icon size={18} />
             {label}
           </NavLink>

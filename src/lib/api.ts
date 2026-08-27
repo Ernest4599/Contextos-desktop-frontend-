@@ -167,3 +167,96 @@ export async function apiCheckSession(): Promise<{ success: boolean; email?: str
   })
   return resp.json()
 }
+
+// --- AIOS ---
+
+export type AiosMemory = {
+  id: number
+  content: string
+  category: string
+  confidence?: string
+  created_at?: string
+  updated_at?: string
+}
+
+export type AiosIdentityStrength = {
+  score: number
+  label: string
+}
+
+export type AiosOverview = {
+  success: boolean
+  total_memories?: number
+  categories?: Record<string, number>
+  last_updated?: string | null
+  conversations_used?: number
+  identity_strength?: AiosIdentityStrength
+  recent_memories?: { id: number; content: string; category: string; updated_at: string | null }[]
+  error?: string
+}
+
+export type AiosTellResult = {
+  success: boolean
+  added?: { content: string; category: string }[]
+  updated?: { content: string; category: string }[]
+  duplicates_skipped?: number
+  error?: string
+}
+
+export type AiosMemoriesResult = {
+  success: boolean
+  memories?: AiosMemory[]
+  error?: string
+}
+
+function authHeaders(): HeadersInit {
+  const token = getStoredToken()
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+  }
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  }
+  return headers
+}
+
+export async function aiosTell(content: string): Promise<AiosTellResult> {
+  const resp = await fetch(`${API_BASE_URL}/aios/tell`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ content }),
+  })
+  return resp.json()
+}
+
+export async function getAiosOverview(): Promise<AiosOverview> {
+  const resp = await fetch(`${API_BASE_URL}/aios/overview`, {
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
+
+export async function getAiosMemories(category?: string): Promise<AiosMemoriesResult> {
+  const url = category
+    ? `${API_BASE_URL}/aios/memories?category=${encodeURIComponent(category)}`
+    : `${API_BASE_URL}/aios/memories`
+  const resp = await fetch(url, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function updateAiosMemory(memoryId: number, content: string) {
+  const resp = await fetch(`${API_BASE_URL}/aios/memories/${memoryId}`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ content }),
+  })
+  return resp.json()
+}
+
+export async function deleteAiosMemory(memoryId: number) {
+  const resp = await fetch(`${API_BASE_URL}/aios/memories/${memoryId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
