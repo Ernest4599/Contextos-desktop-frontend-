@@ -6,6 +6,7 @@ import {
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import Logo from './Logo'
+import { useAuth } from './lib/useAuth'
 
 const navItems = [
   { to: '/home', label: 'Home', icon: Home },
@@ -38,7 +39,17 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
       : 'text-slate-400 hover:bg-slate-800 hover:text-white'
   }`
 
+
+function displayNameFromEmail(email: string): string {
+  const localPart = email.split('@')[0]
+  return localPart.charAt(0).toUpperCase() + localPart.slice(1)
+}
+
 function Sidebar({ extra }: { extra?: ReactNode }) {
+  const { email, isLoggedIn } = useAuth()
+  const displayName = isLoggedIn && email ? displayNameFromEmail(email) : 'Aravind'
+  const displayLabel = isLoggedIn && email ? email : 'Local Workspace'
+  const avatarInitial = isLoggedIn && email ? email.charAt(0).toUpperCase() : 'A'
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
@@ -151,11 +162,11 @@ function Sidebar({ extra }: { extra?: ReactNode }) {
           className="flex items-center gap-3 px-2 py-2 w-full rounded-lg hover:bg-slate-800 transition-colors"
         >
           <div className="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold shrink-0">
-            A
+            {avatarInitial}
           </div>
           <div className="flex-1 text-left">
-            <p className="text-white text-sm font-medium leading-tight">Aravind</p>
-            <p className="text-slate-500 text-xs leading-tight">Local Workspace</p>
+            <p className="text-white text-sm font-medium leading-tight">{displayName}</p>
+            <p className="text-slate-500 text-xs leading-tight">{displayLabel}</p>
           </div>
           <ChevronDown size={16} className="text-slate-500" />
         </button>
