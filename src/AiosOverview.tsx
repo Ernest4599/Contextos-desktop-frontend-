@@ -5,6 +5,7 @@ import {
   BookOpen, PenLine, Info, Layers, ArrowRight,
 } from 'lucide-react'
 import { aiosTell, getAiosOverview, type AiosOverview as AiosOverviewData } from './lib/api'
+import AiosQuickPromptModal from './AiosQuickPromptModal'
 
 const CATEGORY_META: Record<string, { label: string; icon: typeof User }> = {
   personality: { label: 'Personality', icon: User },
@@ -36,18 +37,6 @@ function formatRelativeTime(iso: string | null | undefined): string {
   return date.toLocaleDateString()
 }
 
-function strengthColor(label: string | undefined): string {
-  if (label === 'Strong') return 'text-green-400'
-  if (label === 'Growing') return 'text-yellow-400'
-  return 'text-slate-400'
-}
-
-function strengthDescription(label: string | undefined): string {
-  if (label === 'Strong') return 'AIOS has a strong understanding of you.'
-  if (label === 'Growing') return 'AIOS is starting to understand you. Keep adding to build it out.'
-  return "AIOS doesn't know much about you yet. Tell it more."
-}
-
 function AiosOverview() {
   const navigate = useNavigate()
   const [input, setInput] = useState('')
@@ -56,6 +45,7 @@ function AiosOverview() {
   const [overview, setOverview] = useState<AiosOverviewData | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
+  const [showQuickPromptModal, setShowQuickPromptModal] = useState(false)
 
   async function loadOverview() {
     setLoading(true)
@@ -89,8 +79,6 @@ function AiosOverview() {
 
   const categories = overview?.categories || {}
   const recent = overview?.recent_memories || []
-  const categoryCount = Object.keys(categories).length
-  const strength = overview?.identity_strength
 
   return (
     <div className="flex-1 p-8 overflow-y-auto">
@@ -170,39 +158,6 @@ function AiosOverview() {
         {!loading && !loadError && (
           <div className="w-80 shrink-0 flex flex-col gap-6">
             <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
-              <h2 className="text-white font-medium mb-4">AIOS Summary</h2>
-              <div className="flex flex-col gap-3 text-sm">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Total Memories</span>
-                  <span className="text-white font-medium">{overview?.total_memories ?? 0}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Categories</span>
-                  <span className="text-white font-medium">{categoryCount}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Last Updated</span>
-                  <span className="text-white font-medium">{formatRelativeTime(overview?.last_updated) || '\u2014'}</span>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Conversations Used</span>
-                  <span className="text-white font-medium">{overview?.conversations_used ?? 0}</span>
-                </div>
-              </div>
-            </div>
-
-            {strength && (
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
-                <h2 className="text-white font-medium mb-4">Identity Strength</h2>
-                <div className="text-center">
-                  <div className="text-3xl font-semibold text-white">{strength.score}%</div>
-                  <p className={`text-sm font-medium mt-1 ${strengthColor(strength.label)}`}>{strength.label}</p>
-                  <p className="text-slate-500 text-xs mt-3">{strengthDescription(strength.label)}</p>
-                </div>
-              </div>
-            )}
-
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-white font-medium">Recent Memories</h2>
                 <button
@@ -241,7 +196,7 @@ function AiosOverview() {
               </p>
               <button
                 type="button"
-                onClick={() => navigate('/quick-prompt')}
+                onClick={() => setShowQuickPromptModal(true)}
                 className="flex items-center gap-2 bg-white text-blue-700 text-sm font-medium px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors"
               >
                 Try Quick Prompt
@@ -251,6 +206,10 @@ function AiosOverview() {
           </div>
         )}
       </div>
+
+      {showQuickPromptModal && (
+        <AiosQuickPromptModal onClose={() => setShowQuickPromptModal(false)} />
+      )}
     </div>
   )
 }
