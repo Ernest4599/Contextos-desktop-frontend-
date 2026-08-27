@@ -12,6 +12,7 @@ import Projects from './Projects'
 import Account from './Account'
 import ContextReady from './ContextReady'
 import PromptReady from './PromptReady'
+import RequireAuth from './RequireAuth'
 
 function DashboardLayout() {
   const location = useLocation()
@@ -33,7 +34,7 @@ function DashboardLayout() {
       <Routes>
         <Route path="/home" element={<Home />} />
         <Route path="/quick-prompt" element={<QuickPrompt />} />
-        <Route path="/projects" element={<Projects />} />
+        <Route path="/projects" element={<RequireAuth featureName="Projects"><Projects /></RequireAuth>} />
         <Route path="/import" element={<Import />} />
         <Route path="/processing" element={<Processing />} />
         <Route path="/package" element={<Package />} />

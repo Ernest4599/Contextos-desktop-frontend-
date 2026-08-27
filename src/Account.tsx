@@ -1,11 +1,87 @@
 import { useState } from 'react'
-import { User, Mail, Lock, Eye, UserPlus, LogIn, ShieldCheck, Laptop, Info, ArrowRight, Check } from 'lucide-react'
+import { User, Mail, Lock, Eye, UserPlus, LogIn, ShieldCheck, Laptop, Info, ArrowRight, Check, LogOut } from 'lucide-react'
+import { apiSignup, apiLogin, storeSession } from './lib/api'
+import { useAuth } from './lib/useAuth'
 
 type Tab = 'signin' | 'create'
 
 function Account() {
+  const { email: loggedInEmail, isLoggedIn, checking, setEmail: setAuthEmail, signOut } = useAuth()
+
   const [tab, setTab] = useState<Tab>('signin')
   const [showPassword, setShowPassword] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  const handleSubmit = async () => {
+    setErrorMsg(null)
+    setLoading(true)
+
+    try {
+      const result =
+        tab === 'signin'
+          ? await apiLogin(email, password)
+          : await apiSignup(email, password, confirmPassword)
+
+      if (!result.success || !result.token || !result.email) {
+        setErrorMsg(result.error ?? 'Something went wrong')
+        setLoading(false)
+        return
+      }
+
+      storeSession(result.token, result.email)
+      setAuthEmail(result.email)
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach the server')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSignOut = () => {
+    if (window.confirm('Sign out of ContextOS?')) {
+      signOut()
+    }
+  }
+
+  if (checking) {
+    return (
+      <div className="flex-1 flex items-center justify-center h-screen">
+        <p className="text-slate-400 text-sm">Loading...</p>
+      </div>
+    )
+  }
+
+  if (isLoggedIn) {
+    return (
+      <div className="flex-1 p-6 h-screen overflow-y-auto">
+        <div className="max-w-2xl mx-auto">
+          <h1 className="text-3xl font-bold text-white mb-2">Account</h1>
+          <p className="text-slate-400 mb-8">You're signed in.</p>
+
+          <div className="border border-slate-800 rounded-2xl p-8 flex flex-col items-center text-center">
+            <div className="w-16 h-16 rounded-full bg-blue-600/10 border-2 border-blue-500 flex items-center justify-center mb-4">
+              <User size={28} className="text-blue-400" />
+            </div>
+            <h2 className="text-white text-xl font-semibold mb-1">{loggedInEmail}</h2>
+            <p className="text-slate-400 text-sm mb-6">Projects and Packages will sync across your devices.</p>
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="flex items-center gap-2 border border-red-600/40 text-red-400 text-sm font-medium px-5 py-2.5 rounded-lg hover:bg-red-600/10 transition-colors"
+            >
+              <LogOut size={16} />
+              Sign Out
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
@@ -28,7 +104,7 @@ function Account() {
         <div className="flex border border-slate-800 rounded-xl p-1 mb-6">
           <button
             type="button"
-            onClick={() => setTab('signin')}
+            onClick={() => { setTab('signin'); setErrorMsg(null) }}
             className={`flex-1 flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-colors ${
               tab === 'signin' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
             }`}
@@ -38,7 +114,7 @@ function Account() {
           </button>
           <button
             type="button"
-            onClick={() => setTab('create')}
+            onClick={() => { setTab('create'); setErrorMsg(null) }}
             className={`flex-1 flex items-center justify-center gap-2 text-sm font-medium py-2.5 rounded-lg transition-colors ${
               tab === 'create' ? 'bg-blue-600 text-white' : 'text-slate-400 hover:text-white'
             }`}
@@ -48,12 +124,20 @@ function Account() {
           </button>
         </div>
 
+        {errorMsg && (
+          <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
+            {errorMsg}
+          </div>
+        )}
+
         <div className="mb-5">
           <label className="text-white text-sm font-medium block mb-2">Email</label>
           <div className="relative">
             <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-11 pr-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
             />
@@ -66,6 +150,8 @@ function Account() {
             <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
             <input
               type={showPassword ? 'text' : 'password'}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 8 characters"
               className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-11 pr-11 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
             />
@@ -79,12 +165,30 @@ function Account() {
           </div>
         </div>
 
+        {tab === 'create' && (
+          <div className="mb-6">
+            <label className="text-white text-sm font-medium block mb-2">Confirm Password</label>
+            <div className="relative">
+              <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Re-enter your password"
+                className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg pl-11 pr-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          </div>
+        )}
+
         <button
           type="button"
-          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors"
+          disabled={loading}
+          onClick={handleSubmit}
+          className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm py-3.5 rounded-xl transition-colors"
         >
-          {tab === 'signin' ? 'Sign In' : 'Create Account'}
-          <ArrowRight size={16} />
+          {loading ? 'Please wait...' : tab === 'signin' ? 'Sign In' : 'Create Account'}
+          {!loading && <ArrowRight size={16} />}
         </button>
 
         {tab === 'signin' && (

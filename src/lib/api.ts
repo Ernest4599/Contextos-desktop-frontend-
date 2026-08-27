@@ -109,3 +109,61 @@ export async function callQuickPrompt(
   })
   return resp.json()
 }
+
+
+// --- Auth ---
+
+const TOKEN_KEY = 'contextos_token'
+const EMAIL_KEY = 'contextos_email'
+
+export function getStoredToken(): string | null {
+  return localStorage.getItem(TOKEN_KEY)
+}
+
+export function getStoredEmail(): string | null {
+  return localStorage.getItem(EMAIL_KEY)
+}
+
+export function storeSession(token: string, email: string) {
+  localStorage.setItem(TOKEN_KEY, token)
+  localStorage.setItem(EMAIL_KEY, email)
+}
+
+export function clearSession() {
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(EMAIL_KEY)
+}
+
+export type AuthResult = {
+  success: boolean
+  token?: string
+  email?: string
+  error?: string
+}
+
+export async function apiSignup(email: string, password: string, confirmPassword: string): Promise<AuthResult> {
+  const resp = await fetch(`${API_BASE_URL}/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, confirm_password: confirmPassword }),
+  })
+  return resp.json()
+}
+
+export async function apiLogin(email: string, password: string): Promise<AuthResult> {
+  const resp = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  })
+  return resp.json()
+}
+
+export async function apiCheckSession(): Promise<{ success: boolean; email?: string }> {
+  const token = getStoredToken()
+
+  const resp = await fetch(`${API_BASE_URL}/auth/me`, {
+    headers: { Authorization: `Bearer ${token}` },
+  })
+  return resp.json()
+}
