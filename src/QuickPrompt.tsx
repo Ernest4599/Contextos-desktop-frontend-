@@ -1,12 +1,45 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lightbulb, Sparkles, ArrowRight, ShieldCheck, Target, Check, ClipboardList, Lock, FileText } from 'lucide-react'
+import { callQuickPrompt } from './lib/api'
 
 function QuickPrompt() {
   const navigate = useNavigate()
   const [overview, setOverview] = useState('')
   const [decisions, setDecisions] = useState('')
   const [task, setTask] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  const handleGenerate = async () => {
+    setErrorMsg(null)
+    setLoading(true)
+    const startedAt = performance.now()
+
+    try {
+      const result = await callQuickPrompt(overview, decisions, task)
+      const elapsedSeconds = (performance.now() - startedAt) / 1000
+
+      if (!result.success) {
+        setErrorMsg(result.error ?? 'Something went wrong')
+        setLoading(false)
+        return
+      }
+
+      navigate('/prompt-ready', {
+        state: {
+          role: result.role,
+          prompt: result.prompt,
+          assumptions: result.assumptions,
+          outputFormat: result.output_format,
+          elapsedSeconds,
+        },
+      })
+    } catch (err) {
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to reach the server')
+      setLoading(false)
+    }
+  }
 
   return (
     <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
@@ -25,6 +58,12 @@ function QuickPrompt() {
         <p className="text-slate-400 mb-8">Build a prompt from scratch — no conversation needed.</p>
 
         <div className="border border-slate-800 rounded-2xl p-6">
+          {errorMsg && (
+            <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
+              {errorMsg}
+            </div>
+          )}
+
           <div className="mb-6">
             <h3 className="text-white font-semibold mb-1">Overview</h3>
             <p className="text-slate-400 text-sm mb-3">Explain the main situation or context.</p>
@@ -77,12 +116,13 @@ function QuickPrompt() {
 
           <button
             type="button"
-            onClick={() => navigate('/prompt-ready')}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm py-3.5 rounded-xl transition-all"
+            disabled={loading}
+            onClick={handleGenerate}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60 text-white font-semibold text-sm py-3.5 rounded-xl transition-all"
           >
             <Sparkles size={18} />
-            Generate Prompt
-            <ArrowRight size={18} />
+            {loading ? 'Generating...' : 'Generate Prompt'}
+            {!loading && <ArrowRight size={18} />}
           </button>
 
           <div className="flex items-center justify-center gap-2 mt-4 text-slate-400 text-sm">

@@ -1,22 +1,26 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { Plus, Check, Clock, Copy, ShieldCheck, Info } from 'lucide-react'
+
+type LocationState = {
+  role?: string
+  prompt?: string
+  assumptions?: string[]
+  outputFormat?: string
+  elapsedSeconds?: number
+}
 
 function PromptReady() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const state = location.state as LocationState | null
   const [copied, setCopied] = useState(false)
 
-  const generatedText = `You are an expert AI assistant.
+  if (!state?.prompt) {
+    return <Navigate to="/quick-prompt" replace />
+  }
 
-Goal: Help me create a marketing strategy to launch my productivity app.
-
-Context: I have a task management app targeted at freelancers and remote professionals. The app includes task lists, deadlines, calendar view, reminders, and productivity analytics.
-
-Important decisions: Our target audience is freelancers and remote workers. We are positioning the app as simple, offline-friendly, and privacy-first.
-
-Task: Create a go-to-market strategy including positioning, messaging, acquisition channels, content ideas, and a 30-day launch plan.
-
-Constraints: Budget is limited. Focus on organic growth and low-cost channels. Keep the plan practical and actionable.`
+  const generatedText = state.prompt
 
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedText)
@@ -53,9 +57,23 @@ Constraints: Budget is limited. Focus on organic growth and low-cost channels. K
           <p className="text-slate-400 mb-5">Your prompt is ready to use with any AI.</p>
           <span className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm px-4 py-2 rounded-full">
             <Clock size={14} />
-            Generated in 8.5 seconds
+            {state.elapsedSeconds ? `Generated in ${state.elapsedSeconds.toFixed(1)} seconds` : 'Generated'}
           </span>
+          {state.role && (
+            <span className="mt-3 text-slate-500 text-sm">Role: {state.role}</span>
+          )}
         </div>
+
+        {state.assumptions && state.assumptions.length > 0 && (
+          <div className="border border-yellow-600/30 bg-yellow-600/5 rounded-xl px-5 py-4 mb-6">
+            <p className="text-yellow-400 text-sm font-medium mb-2">Assumptions made</p>
+            <ul className="flex flex-col gap-1">
+              {state.assumptions.map((a, i) => (
+                <li key={i} className="text-yellow-400/80 text-sm">• {a}</li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         <div className="flex items-center justify-between mb-3">
           <p className="text-blue-400 text-sm font-semibold tracking-wide">GENERATED PROMPT</p>

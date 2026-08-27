@@ -86,3 +86,26 @@ export function streamProcessUpload(file: File, onEvent: (evt: SSEEvent) => void
     onEvent
   )
 }
+
+
+export type QuickPromptResult = {
+  success: boolean
+  role?: string
+  prompt?: string
+  assumptions?: string[]
+  output_format?: string
+  error?: string
+}
+
+export async function callQuickPrompt(
+  overview: string,
+  decisions: string,
+  task: string
+): Promise<QuickPromptResult> {
+  const resp = await fetch(`${API_BASE_URL}/quick-prompt`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ overview, decisions, task }),
+  })
+  return resp.json()
+}
