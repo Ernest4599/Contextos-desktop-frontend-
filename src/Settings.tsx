@@ -3,14 +3,11 @@ import { useNavigate } from 'react-router-dom'
 import { Moon, Sun, Monitor, Package, Key, Star, Sparkles, Trash2, Info, ChevronRight } from 'lucide-react'
 import Logo from './Logo'
 import { clearAllData } from './lib/api'
-
-type ThemeOption = 'dark' | 'light' | 'system'
+import { useTheme, type ThemeOption } from './lib/useTheme'
 
 function Settings() {
   const navigate = useNavigate()
-  const [theme, setTheme] = useState<ThemeOption>(
-    (localStorage.getItem('contextos_theme') as ThemeOption) || 'dark'
-  )
+  const { theme, setTheme } = useTheme()
   const [showThemePicker, setShowThemePicker] = useState(false)
   const [showClearConfirm, setShowClearConfirm] = useState(false)
   const [clearing, setClearing] = useState(false)
@@ -19,7 +16,6 @@ function Settings() {
 
   const handleThemeChange = (option: ThemeOption) => {
     setTheme(option)
-    localStorage.setItem('contextos_theme', option)
     setShowThemePicker(false)
   }
 
