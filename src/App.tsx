@@ -14,6 +14,10 @@ import Account from './Account'
 import ContextReady from './ContextReady'
 import PromptReady from './PromptReady'
 import RequireAuth from './RequireAuth'
+import LicensePage from './LicensePage'
+import RecoveryKeyPage from './RecoveryKeyPage'
+import UpgradePage from './UpgradePage'
+import AiosPreferencesPage from './AiosPreferencesPage'
 import AiosOverview from './AiosOverview'
 import AiosMemories from './AiosMemories'
 
@@ -44,6 +48,10 @@ function DashboardLayout() {
       <Route path="/processing" element={<Processing />} />
       <Route path="/package" element={<Package />} />
       <Route path="/settings" element={<Settings />} />
+      <Route path="/settings/license" element={<RequireAuth featureName="License"><LicensePage /></RequireAuth>} />
+      <Route path="/settings/recovery-key" element={<RecoveryKeyPage />} />
+      <Route path="/settings/upgrade" element={<UpgradePage />} />
+      <Route path="/settings/aios-preferences" element={<RequireAuth featureName="AIOS Preferences"><AiosPreferencesPage /></RequireAuth>} />
       <Route path="/account" element={<Account />} />
       <Route path="/context-ready" element={<ContextReady />} />
       <Route path="/prompt-ready" element={<PromptReady />} />

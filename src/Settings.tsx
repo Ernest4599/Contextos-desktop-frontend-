@@ -1,7 +1,41 @@
-import { Moon, Package, Key, Star, Trash2, Info, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Moon, Sun, Monitor, Package, Key, Star, Sparkles, Trash2, Info, ChevronRight } from 'lucide-react'
 import Logo from './Logo'
+import { clearAllData } from './lib/api'
+
+type ThemeOption = 'dark' | 'light' | 'system'
 
 function Settings() {
+  const navigate = useNavigate()
+  const [theme, setTheme] = useState<ThemeOption>(
+    (localStorage.getItem('contextos_theme') as ThemeOption) || 'dark'
+  )
+  const [showThemePicker, setShowThemePicker] = useState(false)
+  const [showClearConfirm, setShowClearConfirm] = useState(false)
+  const [clearing, setClearing] = useState(false)
+  const [clearError, setClearError] = useState<string | null>(null)
+  const [cleared, setCleared] = useState(false)
+
+  const handleThemeChange = (option: ThemeOption) => {
+    setTheme(option)
+    localStorage.setItem('contextos_theme', option)
+    setShowThemePicker(false)
+  }
+
+  const handleClearAllData = async () => {
+    setClearing(true)
+    setClearError(null)
+    const result = await clearAllData()
+    if (result.success) {
+      setCleared(true)
+      setShowClearConfirm(false)
+    } else {
+      setClearError(result.error ?? 'Failed to clear data')
+    }
+    setClearing(false)
+  }
+
   return (
     <div className="flex-1 p-6 h-screen overflow-y-auto">
       <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
@@ -11,6 +45,7 @@ function Settings() {
       <div className="border border-slate-800 rounded-2xl overflow-hidden mb-8">
         <button
           type="button"
+          onClick={() => setShowThemePicker(!showThemePicker)}
           className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
         >
           <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center shrink-0">
@@ -18,16 +53,39 @@ function Settings() {
           </div>
           <div className="flex-1 text-left">
             <p className="text-white font-medium text-sm">Theme</p>
-            <p className="text-slate-500 text-xs mt-0.5">Dark</p>
+            <p className="text-slate-500 text-xs mt-0.5 capitalize">{theme}</p>
           </div>
-          <ChevronRight size={18} className="text-slate-500" />
+          <ChevronRight size={18} className={`text-slate-500 transition-transform ${showThemePicker ? 'rotate-90' : ''}`} />
         </button>
+
+        {showThemePicker && (
+          <div className="border-t border-slate-800 px-5 py-3 flex flex-col gap-1">
+            {([
+              { id: 'dark', label: 'Dark', icon: Moon },
+              { id: 'light', label: 'Light', icon: Sun },
+              { id: 'system', label: 'System', icon: Monitor },
+            ] as const).map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => handleThemeChange(id)}
+                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                  theme === id ? 'bg-blue-600/10 text-blue-400' : 'text-slate-300 hover:bg-slate-800'
+                }`}
+              >
+                <Icon size={16} />
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <p className="text-slate-500 text-xs font-medium mb-3">DATA & PACKAGES</p>
       <div className="border border-slate-800 rounded-2xl overflow-hidden mb-8">
         <button
           type="button"
+          onClick={() => navigate('/package')}
           className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors border-b border-slate-800"
         >
           <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center shrink-0">
@@ -41,6 +99,7 @@ function Settings() {
         </button>
         <button
           type="button"
+          onClick={() => navigate('/settings/recovery-key')}
           className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
         >
           <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center shrink-0">
@@ -48,7 +107,7 @@ function Settings() {
           </div>
           <div className="flex-1 text-left">
             <p className="text-white font-medium text-sm">Recovery Key</p>
-            <p className="text-slate-500 text-xs mt-0.5">Back up and restore access to your local ContextOS data</p>
+            <p className="text-slate-500 text-xs mt-0.5">Recover a license using a saved recovery code</p>
           </div>
           <ChevronRight size={18} className="text-slate-500" />
         </button>
@@ -58,7 +117,22 @@ function Settings() {
       <div className="border border-slate-800 rounded-2xl overflow-hidden mb-8">
         <button
           type="button"
-          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
+          onClick={() => navigate('/settings/upgrade')}
+          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors border-b border-slate-800"
+        >
+          <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center shrink-0">
+            <Star size={18} className="text-blue-400" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-white font-medium text-sm">Upgrade</p>
+            <p className="text-slate-500 text-xs mt-0.5">Choose a plan and unlock more</p>
+          </div>
+          <ChevronRight size={18} className="text-slate-500" />
+        </button>
+        <button
+          type="button"
+          onClick={() => navigate('/settings/license')}
+          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors border-b border-slate-800"
         >
           <div className="w-10 h-10 rounded-xl bg-blue-600/10 flex items-center justify-center shrink-0">
             <Star size={18} className="text-blue-400" />
@@ -69,23 +143,69 @@ function Settings() {
           </div>
           <ChevronRight size={18} className="text-slate-500" />
         </button>
+        <button
+          type="button"
+          onClick={() => navigate('/settings/aios-preferences')}
+          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
+        >
+          <div className="w-10 h-10 rounded-xl bg-purple-600/10 flex items-center justify-center shrink-0">
+            <Sparkles size={18} className="text-purple-400" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-white font-medium text-sm">AIOS Preferences</p>
+            <p className="text-slate-500 text-xs mt-0.5">Control how AIOS personalizes your prompts</p>
+          </div>
+          <ChevronRight size={18} className="text-slate-500" />
+        </button>
       </div>
 
       <p className="text-slate-500 text-xs font-medium mb-3">DANGER ZONE</p>
       <div className="border border-slate-800 rounded-2xl overflow-hidden mb-8">
-        <button
-          type="button"
-          className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
-        >
-          <div className="w-10 h-10 rounded-xl bg-red-600/10 flex items-center justify-center shrink-0">
-            <Trash2 size={18} className="text-red-500" />
+        {!showClearConfirm ? (
+          <button
+            type="button"
+            onClick={() => setShowClearConfirm(true)}
+            className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-900 transition-colors"
+          >
+            <div className="w-10 h-10 rounded-xl bg-red-600/10 flex items-center justify-center shrink-0">
+              <Trash2 size={18} className="text-red-500" />
+            </div>
+            <div className="flex-1 text-left">
+              <p className="text-red-500 font-medium text-sm">Clear All Data</p>
+              <p className="text-slate-500 text-xs mt-0.5">
+                {cleared ? 'Data cleared.' : 'Permanently delete all local ContextOS data'}
+              </p>
+            </div>
+            <ChevronRight size={18} className="text-slate-500" />
+          </button>
+        ) : (
+          <div className="px-5 py-4">
+            <p className="text-red-400 text-sm font-medium mb-1">
+              This permanently deletes your locally stored ContextOS data. This action cannot be undone.
+            </p>
+            <p className="text-slate-500 text-xs mb-4">
+              This does not delete your license or account.
+            </p>
+            {clearError && <p className="text-red-400 text-xs mb-3">{clearError}</p>}
+            <div className="flex gap-3">
+              <button
+                type="button"
+                disabled={clearing}
+                onClick={handleClearAllData}
+                className="bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
+              >
+                {clearing ? 'Deleting...' : 'Yes, Delete Everything'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowClearConfirm(false)}
+                className="text-slate-400 text-sm hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
-          <div className="flex-1 text-left">
-            <p className="text-red-500 font-medium text-sm">Clear All Data</p>
-            <p className="text-slate-500 text-xs mt-0.5">Permanently delete all local ContextOS data</p>
-          </div>
-          <ChevronRight size={18} className="text-slate-500" />
-        </button>
+        )}
       </div>
 
       <p className="text-slate-500 text-xs font-medium mb-3">ABOUT</p>

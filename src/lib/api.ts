@@ -324,3 +324,100 @@ export async function deleteProject(projectId: number): Promise<{ success: boole
   })
   return resp.json()
 }
+
+
+// --- License ---
+
+export type License = {
+  license_id: number
+  license_key: string
+  plan: string
+  status: string
+  created_at?: string
+  expires_at?: string | null
+}
+
+export type LicenseResult = {
+  success: boolean
+  license?: License
+  error?: string
+}
+
+export type PurchaseWithCodesResult = {
+  success: boolean
+  license?: License
+  recovery_codes?: string[]
+  error?: string
+}
+
+export async function getMyLicense(): Promise<LicenseResult> {
+  const resp = await fetch(`${API_BASE_URL}/license/mine`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function purchaseLicenseWithCodes(plan: string): Promise<PurchaseWithCodesResult> {
+  const resp = await fetch(`${API_BASE_URL}/license/purchase-with-codes`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ plan }),
+  })
+  return resp.json()
+}
+
+export async function recoverLicense(code: string): Promise<{ success: boolean; license_key?: string; plan?: string; status?: string; recovery_codes_remaining?: number; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/license/recover`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ code }),
+  })
+  return resp.json()
+}
+
+export async function rotateRecoveryCode(licenseId: number): Promise<{ success: boolean; new_code?: string; recovery_codes_remaining?: number; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/license/${licenseId}/rotate-code`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
+
+// --- AIOS Preferences ---
+
+export type AiosPreferencesResult = {
+  success: boolean
+  personalization_level?: string
+  enabled_categories?: string[]
+  error?: string
+}
+
+export async function getAiosPreferences(): Promise<AiosPreferencesResult> {
+  const resp = await fetch(`${API_BASE_URL}/aios/preferences`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function updateAiosPreferences(level: string, categories: string[]): Promise<AiosPreferencesResult> {
+  const resp = await fetch(`${API_BASE_URL}/aios/preferences`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ personalization_level: level, enabled_categories: categories }),
+  })
+  return resp.json()
+}
+
+export async function resetAiosIdentity(): Promise<{ success: boolean; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/aios/reset-identity`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
+
+// --- Data ---
+
+export async function clearAllData(): Promise<{ success: boolean; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/data/clear-all`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
