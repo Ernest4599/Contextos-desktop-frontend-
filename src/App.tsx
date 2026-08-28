@@ -21,10 +21,13 @@ import AiosPreferencesPage from './AiosPreferencesPage'
 import AiosOverview from './AiosOverview'
 import AiosMemories from './AiosMemories'
 
+const OVERLAY_SIDEBAR_ROUTES = ['/home', '/quick-prompt', '/import']
+
 function DashboardLayout() {
   const location = useLocation()
   const isAiosRoute = location.pathname.startsWith('/aios')
-  const [aiosSidebarOpen, setAiosSidebarOpen] = useState(false)
+  const isOverlaySidebarRoute = isAiosRoute || OVERLAY_SIDEBAR_ROUTES.includes(location.pathname)
+  const [overlaySidebarOpen, setOverlaySidebarOpen] = useState(false)
 
   const tipExtra =
     location.pathname === '/prompt-ready' ? (
@@ -58,14 +61,14 @@ function DashboardLayout() {
     </Routes>
   )
 
-  if (isAiosRoute) {
+  if (isOverlaySidebarRoute) {
     return (
       <div className="flex bg-slate-900 min-h-screen relative">
-        {aiosSidebarOpen ? (
+        {overlaySidebarOpen ? (
           <>
             <div
               className="fixed inset-0 bg-black/50 z-40"
-              onClick={() => setAiosSidebarOpen(false)}
+              onClick={() => setOverlaySidebarOpen(false)}
             />
             <div className="fixed left-0 top-0 z-50 h-screen">
               <Sidebar extra={tipExtra} />
@@ -74,7 +77,7 @@ function DashboardLayout() {
         ) : (
           <button
             type="button"
-            onClick={() => setAiosSidebarOpen(true)}
+            onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
             className="w-12 h-screen bg-slate-950 border-r border-slate-800 flex items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
           >
