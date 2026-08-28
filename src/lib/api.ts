@@ -421,3 +421,13 @@ export async function clearAllData(): Promise<{ success: boolean; error?: string
   })
   return resp.json()
 }
+
+
+export async function verifyLicenseByKey(licenseKey: string): Promise<LicenseResult> {
+  const resp = await fetch(`${API_BASE_URL}/license/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ license_key: licenseKey }),
+  })
+  return resp.json()
+}

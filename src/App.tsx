@@ -48,7 +48,7 @@ function DashboardLayout() {
       <Route path="/processing" element={<Processing />} />
       <Route path="/package" element={<Package />} />
       <Route path="/settings" element={<Settings />} />
-      <Route path="/settings/license" element={<RequireAuth featureName="License"><LicensePage /></RequireAuth>} />
+      <Route path="/settings/license" element={<LicensePage />} />
       <Route path="/settings/recovery-key" element={<RecoveryKeyPage />} />
       <Route path="/settings/upgrade" element={<UpgradePage />} />
       <Route path="/settings/aios-preferences" element={<RequireAuth featureName="AIOS Preferences"><AiosPreferencesPage /></RequireAuth>} />

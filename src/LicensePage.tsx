@@ -1,28 +1,64 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ArrowLeft, Star, Copy, RefreshCw, Check } from 'lucide-react'
-import { getMyLicense, rotateRecoveryCode, type License } from './lib/api'
+import { ArrowLeft, Star, Copy, RefreshCw, Check, Key } from 'lucide-react'
+import { getMyLicense, rotateRecoveryCode, verifyLicenseByKey, type License } from './lib/api'
+import { useAuth } from './lib/useAuth'
 
 function LicensePage() {
   const navigate = useNavigate()
+  const { isLoggedIn, checking: authChecking } = useAuth()
+
   const [license, setLicense] = useState<License | null>(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+
   const [rotating, setRotating] = useState(false)
   const [rotateResult, setRotateResult] = useState<{ new_code: string; remaining: number } | null>(null)
   const [rotateError, setRotateError] = useState<string | null>(null)
 
+  const [manualKey, setManualKey] = useState('')
+  const [verifying, setVerifying] = useState(false)
+  const [verifyError, setVerifyError] = useState<string | null>(null)
+
   useEffect(() => {
-    getMyLicense().then((result) => {
-      if (result.success && result.license) {
-        setLicense(result.license)
-      } else {
-        setLoadError(result.error ?? 'Failed to load license')
-      }
+    if (authChecking) return
+
+    if (isLoggedIn) {
+      getMyLicense().then((result) => {
+        if (result.success && result.license) {
+          setLicense(result.license)
+        } else {
+          setLoadError(result.error ?? 'Failed to load license')
+        }
+        setLoading(false)
+      })
+    } else {
       setLoading(false)
-    })
-  }, [])
+    }
+  }, [authChecking, isLoggedIn])
+
+  const handleVerify = async () => {
+    if (!manualKey.trim()) {
+      setVerifyError('Enter your license number')
+      return
+    }
+    setVerifyError(null)
+    setVerifying(true)
+    try {
+      const result = await verifyLicenseByKey(manualKey.trim())
+      if (!result.success || !result.license) {
+        setVerifyError(result.error ?? 'License not found')
+        setVerifying(false)
+        return
+      }
+      setLicense(result.license)
+    } catch (err) {
+      setVerifyError(err instanceof Error ? err.message : 'Failed to reach the server')
+    } finally {
+      setVerifying(false)
+    }
+  }
 
   const handleCopy = () => {
     if (!license) return
@@ -58,9 +94,42 @@ function LicensePage() {
       <h1 className="text-2xl font-bold text-white mb-1">My License</h1>
       <p className="text-slate-400 mb-8">Plan, status, and recovery.</p>
 
-      {loading && <p className="text-slate-500 text-sm">Loading...</p>}
+      {(authChecking || loading) && <p className="text-slate-500 text-sm">Loading...</p>}
 
-      {!loading && loadError && (
+      {!authChecking && !loading && !license && !isLoggedIn && (
+        <div className="border border-slate-800 rounded-2xl p-6">
+          <div className="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center mb-4">
+            <Key size={22} className="text-blue-400" />
+          </div>
+          <h2 className="text-white font-medium mb-1">Enter your license number</h2>
+          <p className="text-slate-500 text-sm mb-4">You don't need an account to view a standalone license.</p>
+
+          {verifyError && (
+            <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-4 py-3 mb-4">
+              {verifyError}
+            </div>
+          )}
+
+          <input
+            type="text"
+            value={manualKey}
+            onChange={(e) => setManualKey(e.target.value)}
+            placeholder="CTX-XXXX-XXXX-XXXX"
+            className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono mb-4"
+          />
+
+          <button
+            type="button"
+            disabled={verifying}
+            onClick={handleVerify}
+            className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl transition-colors"
+          >
+            {verifying ? 'Verifying...' : 'Verify License'}
+          </button>
+        </div>
+      )}
+
+      {!authChecking && !loading && !license && isLoggedIn && loadError && (
         <div className="border border-slate-800 rounded-2xl p-8 text-center">
           <Star size={28} className="text-slate-600 mx-auto mb-3" />
           <p className="text-white font-medium mb-1">No license found</p>
@@ -105,38 +174,40 @@ function LicensePage() {
             </div>
           </div>
 
-          <div className="border border-slate-800 rounded-2xl p-6">
-            <h2 className="text-white font-semibold mb-2">Recovery Code</h2>
-            <p className="text-slate-400 text-sm mb-4">
-              Lost or used a recovery code? Generate a new one to replace it.
-            </p>
+          {isLoggedIn && (
+            <div className="border border-slate-800 rounded-2xl p-6">
+              <h2 className="text-white font-semibold mb-2">Recovery Code</h2>
+              <p className="text-slate-400 text-sm mb-4">
+                Lost or used a recovery code? Generate a new one to replace it.
+              </p>
 
-            {rotateError && (
-              <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-4 py-3 mb-4">
-                {rotateError}
-              </div>
-            )}
+              {rotateError && (
+                <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-4 py-3 mb-4">
+                  {rotateError}
+                </div>
+              )}
 
-            {rotateResult ? (
-              <div className="border border-green-600/40 bg-green-600/10 rounded-xl px-4 py-4">
-                <p className="text-green-400 text-sm font-medium mb-2">New recovery code generated — save it now:</p>
-                <code className="block bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-sm font-mono mb-2">
-                  {rotateResult.new_code}
-                </code>
-                <p className="text-slate-500 text-xs">{rotateResult.remaining} recovery codes now active.</p>
-              </div>
-            ) : (
-              <button
-                type="button"
-                disabled={rotating}
-                onClick={handleRotate}
-                className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-slate-800 disabled:opacity-60 transition-colors"
-              >
-                <RefreshCw size={16} className={rotating ? 'animate-spin' : ''} />
-                {rotating ? 'Generating...' : 'Generate New Code'}
-              </button>
-            )}
-          </div>
+              {rotateResult ? (
+                <div className="border border-green-600/40 bg-green-600/10 rounded-xl px-4 py-4">
+                  <p className="text-green-400 text-sm font-medium mb-2">New recovery code generated — save it now:</p>
+                  <code className="block bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-sm font-mono mb-2">
+                    {rotateResult.new_code}
+                  </code>
+                  <p className="text-slate-500 text-xs">{rotateResult.remaining} recovery codes now active.</p>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  disabled={rotating}
+                  onClick={handleRotate}
+                  className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-slate-800 disabled:opacity-60 transition-colors"
+                >
+                  <RefreshCw size={16} className={rotating ? 'animate-spin' : ''} />
+                  {rotating ? 'Generating...' : 'Generate New Code'}
+                </button>
+              )}
+            </div>
+          )}
         </>
       )}
     </div>
