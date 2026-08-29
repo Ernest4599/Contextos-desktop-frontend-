@@ -1,53 +1,40 @@
 import { useNavigate } from 'react-router-dom'
-import { Link2, Clipboard, UploadCloud, Download, Lock, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Lock, ShieldCheck } from 'lucide-react'
+import { useAuth } from './lib/useAuth'
+
+function firstNameFromEmail(email: string): string {
+  const localPart = email.split('@')[0]
+  return localPart.charAt(0).toUpperCase() + localPart.slice(1)
+}
 
 function Home() {
   const navigate = useNavigate()
+  const { email, isLoggedIn } = useAuth()
+  const greetingName = isLoggedIn && email ? firstNameFromEmail(email) : null
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-y-auto">
       <div className="flex-1 flex gap-6 p-4 overflow-y-auto">
       {/* Center column */}
       <div className="flex-1 max-w-3xl">
-        <h1 className="text-4xl font-bold text-white mb-2">Welcome to ContextOS</h1>
-        <p className="text-slate-400 text-lg mb-8">Turn any AI conversation into a reusable Context Package.</p>
+        <p className="text-blue-400 text-sm font-semibold mb-3">
+          {greetingName ? `Welcome back, ${greetingName}` : 'ContextOS'}
+        </p>
+        <h1 className="text-5xl font-bold text-white mb-2 leading-tight">
+          Continue. <span className="text-blue-500">Don't restart.</span>
+        </h1>
+        <p className="text-slate-400 text-lg mb-8">Never restart your AI again. Your work, preserved, anywhere you go.</p>
 
-        <div className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-16 px-8">
-          <div className="w-16 h-16 rounded-full bg-blue-600/10 flex items-center justify-center mb-6">
-            <Download size={28} className="text-blue-500" />
-          </div>
-          <h2 className="text-white text-2xl font-semibold mb-2">Import a conversation</h2>
-          <p className="text-slate-400 mb-8">Drop a file here or choose an option below</p>
+        <button
+          type="button"
+          onClick={() => navigate('/import')}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-base px-6 py-3.5 rounded-xl transition-colors mb-8"
+        >
+          Try Importing
+          <ArrowRight size={18} />
+        </button>
 
-          <div className="flex gap-3 w-full max-w-md">
-            <button
-              type="button"
-              onClick={() => navigate('/import')}
-              className="flex-1 flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
-            >
-              <Link2 size={16} />
-              Share Link
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/import')}
-              className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
-            >
-              <Clipboard size={16} />
-              Paste Text
-            </button>
-            <button
-              type="button"
-              onClick={() => navigate('/import')}
-              className="flex-1 flex items-center justify-center gap-2 bg-slate-800 hover:bg-slate-700 text-white font-medium text-sm px-4 py-3 rounded-xl transition-colors whitespace-nowrap"
-            >
-              <UploadCloud size={16} />
-              Upload File
-            </button>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-center gap-2 mt-6 text-slate-500 text-sm">
+        <div className="flex items-center gap-2 text-slate-500 text-sm">
           <Lock size={14} />
           <p>We process everything locally. Your conversation is never stored.</p>
         </div>
