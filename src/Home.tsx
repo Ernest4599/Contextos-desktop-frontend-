@@ -14,7 +14,7 @@ function Home() {
 
   return (
     <div className="flex-1 flex flex-col h-screen overflow-y-auto">
-      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 overflow-x-auto shrink-0">
+      <div className="flex items-center justify-center gap-2 px-4 py-3 border-b border-slate-800 overflow-x-auto shrink-0">
         {homeTopNavItems.map(({ to, label, icon: Icon }) => (
           <button
             key={to}
