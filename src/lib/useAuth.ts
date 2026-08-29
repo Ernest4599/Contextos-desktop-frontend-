@@ -12,15 +12,22 @@ export function useAuth() {
       return
     }
 
-    apiCheckSession().then((result) => {
-      if (result.success && result.email) {
-        setEmail(result.email)
-      } else {
-        clearSession()
-        setEmail(null)
-      }
-      setChecking(false)
-    })
+    apiCheckSession()
+      .then((result) => {
+        if (result.success && result.email) {
+          setEmail(result.email)
+        } else {
+          clearSession()
+          setEmail(null)
+        }
+      })
+      .catch(() => {
+        // Network error, cold-start timeout, etc. - don't clear the
+        // session on a transient failure, just stop blocking the UI.
+      })
+      .finally(() => {
+        setChecking(false)
+      })
   }, [])
 
   const signOut = () => {
