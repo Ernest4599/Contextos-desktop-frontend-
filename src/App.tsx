@@ -14,6 +14,7 @@ import Account from './Account'
 import ContextReady from './ContextReady'
 import PromptReady from './PromptReady'
 import RequireAuth from './RequireAuth'
+import TopNav from './TopNav'
 import LicensePage from './LicensePage'
 import RecoveryKeyPage from './RecoveryKeyPage'
 import UpgradePage from './UpgradePage'
@@ -84,7 +85,10 @@ function DashboardLayout() {
             <Menu size={20} className="text-slate-400" />
           </button>
         )}
-        <div className="flex-1">{routesElement}</div>
+        <div className="flex-1 flex flex-col min-w-0">
+          <TopNav />
+          <div className="flex-1 overflow-y-auto">{routesElement}</div>
+        </div>
       </div>
     )
   }
@@ -92,7 +96,10 @@ function DashboardLayout() {
   return (
     <div className="flex bg-slate-900 min-h-screen">
       <Sidebar extra={tipExtra} />
-      {routesElement}
+      <div className="flex-1 flex flex-col min-w-0">
+        <TopNav />
+        <div className="flex-1 overflow-y-auto">{routesElement}</div>
+      </div>
     </div>
   )
 }
