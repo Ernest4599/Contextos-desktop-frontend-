@@ -22,12 +22,8 @@ import AiosPreferencesPage from './AiosPreferencesPage'
 import AiosOverview from './AiosOverview'
 import AiosMemories from './AiosMemories'
 
-const OVERLAY_SIDEBAR_ROUTES = ['/home', '/quick-prompt', '/import']
-
 function DashboardLayout() {
   const location = useLocation()
-  const isAiosRoute = location.pathname.startsWith('/aios')
-  const isOverlaySidebarRoute = isAiosRoute || OVERLAY_SIDEBAR_ROUTES.includes(location.pathname)
   const [overlaySidebarOpen, setOverlaySidebarOpen] = useState(false)
 
   const tipExtra =
@@ -62,40 +58,28 @@ function DashboardLayout() {
     </Routes>
   )
 
-  if (isOverlaySidebarRoute) {
-    return (
-      <div className="flex bg-slate-900 min-h-screen relative">
-        {overlaySidebarOpen ? (
-          <>
-            <div
-              className="fixed inset-0 bg-black/50 z-40"
-              onClick={() => setOverlaySidebarOpen(false)}
-            />
-            <div className="fixed left-0 top-0 z-50 h-screen">
-              <Sidebar extra={tipExtra} />
-            </div>
-          </>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setOverlaySidebarOpen(true)}
-            aria-label="Open sidebar"
-            className="w-12 h-screen bg-slate-950 border-r border-slate-800 flex items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
-          >
-            <Menu size={20} className="text-slate-400" />
-          </button>
-        )}
-        <div className="flex-1 flex flex-col min-w-0">
-          <TopNav />
-          <div className="flex-1 overflow-y-auto">{routesElement}</div>
-        </div>
-      </div>
-    )
-  }
-
   return (
-    <div className="flex bg-slate-900 min-h-screen">
-      <Sidebar extra={tipExtra} />
+    <div className="flex bg-slate-900 min-h-screen relative">
+      {overlaySidebarOpen ? (
+        <>
+          <div
+            className="fixed inset-0 bg-black/50 z-40"
+            onClick={() => setOverlaySidebarOpen(false)}
+          />
+          <div className="fixed left-0 top-0 z-50 h-screen">
+            <Sidebar extra={tipExtra} />
+          </div>
+        </>
+      ) : (
+        <button
+          type="button"
+          onClick={() => setOverlaySidebarOpen(true)}
+          aria-label="Open sidebar"
+          className="w-12 h-screen bg-slate-950 border-r border-slate-800 flex items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
+        >
+          <Menu size={20} className="text-slate-400" />
+        </button>
+      )}
       <div className="flex-1 flex flex-col min-w-0">
         <TopNav />
         <div className="flex-1 overflow-y-auto">{routesElement}</div>
