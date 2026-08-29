@@ -1,7 +1,8 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Sparkles, Zap, Upload, HelpCircle, Info } from 'lucide-react'
+import { Home, Sparkles, Zap, Upload, HelpCircle, Info } from 'lucide-react'
 
 const topNavItems = [
+  { to: '/home', label: 'Home', icon: Home },
   { to: '/import', label: 'Import', icon: Upload },
   { to: '/aios', label: 'AIOS', icon: Sparkles },
   { to: '/quick-prompt', label: 'Quick Prompt', icon: Zap },
