@@ -1,11 +1,34 @@
 import { useNavigate } from 'react-router-dom'
-import { Link2, Clipboard, UploadCloud, Download, Lock, ShieldCheck } from 'lucide-react'
+import { Link2, Clipboard, UploadCloud, Download, Lock, ShieldCheck, Sparkles, Zap, Upload, HelpCircle, Info } from 'lucide-react'
+
+const homeTopNavItems = [
+  { to: '/import', label: 'Import', icon: Upload },
+  { to: '/aios', label: 'AIOS', icon: Sparkles },
+  { to: '/quick-prompt', label: 'Quick Prompt', icon: Zap },
+  { to: '/how-it-works', label: 'How it Works', icon: HelpCircle },
+  { to: '/about', label: 'About ContextOS', icon: Info },
+]
 
 function Home() {
   const navigate = useNavigate()
 
   return (
-    <div className="flex-1 flex gap-6 p-4 h-screen overflow-y-auto">
+    <div className="flex-1 flex flex-col h-screen overflow-y-auto">
+      <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 overflow-x-auto shrink-0">
+        {homeTopNavItems.map(({ to, label, icon: Icon }) => (
+          <button
+            key={to}
+            type="button"
+            onClick={() => navigate(to)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-white transition-colors whitespace-nowrap shrink-0"
+          >
+            <Icon size={16} />
+            {label}
+          </button>
+        ))}
+      </div>
+
+      <div className="flex-1 flex gap-6 p-4 overflow-y-auto">
       {/* Center column */}
       <div className="flex-1 max-w-3xl">
         <h1 className="text-4xl font-bold text-white mb-2">Welcome to ContextOS</h1>
@@ -116,6 +139,7 @@ function Home() {
             <p className="text-blue-400 text-sm italic">"Your context. Your control." Always.</p>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )
