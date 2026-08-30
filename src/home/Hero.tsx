@@ -6,7 +6,7 @@ function Hero() {
   const navigate = useNavigate()
 
   return (
-    <section className="overflow-hidden border-b border-slate-800/60">
+    <section className="overflow-hidden border-b border-slate-200 dark:border-slate-800/60">
       <div className="mx-auto grid max-w-[1440px] grid-cols-1 md:grid-cols-[38%_62%] items-start gap-[clamp(16px,3vw,48px)] px-[clamp(16px,4vw,96px)] pt-[clamp(28px,4.5vw,64px)] pb-[clamp(20px,3vw,56px)]">
         {/* LEFT COPY */}
         <div className="relative z-10 min-w-0 after:pointer-events-none after:absolute after:right-[-30px] after:top-0 after:h-full after:w-[90px] after:bg-gradient-to-r after:from-slate-950/0 after:via-slate-900/60 after:to-transparent after:hidden md:after:block">
@@ -14,13 +14,13 @@ function Hero() {
             CONTEXTOS
           </p>
 
-          <h1 className="mb-[clamp(8px,1.2vw,16px)] text-[clamp(24px,4.8vw,64px)] font-bold leading-[1.02] tracking-tight text-white">
+          <h1 className="mb-[clamp(8px,1.2vw,16px)] text-[clamp(24px,4.8vw,64px)] font-bold leading-[1.02] tracking-tight text-slate-900 dark:text-white">
             Continue.
             <br />
             <span className="text-blue-500">Don't</span> restart.
           </h1>
 
-          <p className="mb-[clamp(10px,1.6vw,24px)] text-[clamp(12px,1.3vw,20px)] leading-[1.5] text-slate-400">
+          <p className="mb-[clamp(10px,1.6vw,24px)] text-[clamp(12px,1.3vw,20px)] leading-[1.5] text-slate-600 dark:text-slate-400">
             The AIOS for your context.
             <br />
             Your work, preserved. Anywhere you go.
@@ -39,14 +39,14 @@ function Hero() {
             <button
               type="button"
               onClick={() => navigate('/aios')}
-              className="flex items-center gap-2 whitespace-nowrap rounded-xl border border-slate-700 bg-transparent px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:border-slate-600 hover:bg-slate-900 md:gap-[clamp(3px,0.5vw,8px)] md:px-[clamp(12px,2vw,32px)] md:py-[clamp(5px,0.9vw,14px)] md:text-[clamp(8px,0.95vw,14px)]"
+              className="flex items-center gap-2 whitespace-nowrap rounded-xl border border-slate-300 dark:border-slate-700 bg-transparent px-4 py-2.5 text-sm font-semibold text-slate-900 dark:text-white transition-colors hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-900 md:gap-[clamp(3px,0.5vw,8px)] md:px-[clamp(12px,2vw,32px)] md:py-[clamp(5px,0.9vw,14px)] md:text-[clamp(8px,0.95vw,14px)]"
             >
               Try AIOS
               <Play className="h-3.5 w-3.5 md:h-[clamp(8px,0.9vw,15px)] md:w-[clamp(8px,0.9vw,15px)]" />
             </button>
           </div>
 
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-500 md:gap-x-[clamp(6px,1.2vw,24px)] md:text-[clamp(7px,0.7vw,12px)]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-slate-600 dark:text-slate-500 md:gap-x-[clamp(6px,1.2vw,24px)] md:text-[clamp(7px,0.7vw,12px)]">
             <span className="flex items-center gap-1 whitespace-nowrap">
               <Shield className="h-3 w-3 md:h-[clamp(7px,0.8vw,13px)] md:w-[clamp(9px,0.8vw,14px)]" />
               Private by design
