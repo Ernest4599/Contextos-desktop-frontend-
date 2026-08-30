@@ -47,9 +47,9 @@ function displayNameFromEmail(email: string): string {
 
 function Sidebar({ extra, onClose }: { extra?: ReactNode; onClose?: () => void }) {
   const { email, isLoggedIn } = useAuth()
-  const displayName = isLoggedIn && email ? displayNameFromEmail(email) : 'Aravind'
-  const displayLabel = isLoggedIn && email ? email : 'Local Workspace'
-  const avatarInitial = isLoggedIn && email ? email.charAt(0).toUpperCase() : 'A'
+  const displayName = isLoggedIn && email ? displayNameFromEmail(email) : 'Sign In'
+  const displayLabel = isLoggedIn && email ? email : 'Access your account'
+  const avatarInitial = isLoggedIn && email ? email.charAt(0).toUpperCase() : '?'
   const navigate = useNavigate()
   const location = useLocation()
   const [searchParams] = useSearchParams()
