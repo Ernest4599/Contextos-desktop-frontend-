@@ -9,7 +9,7 @@ function Logo({ size = 32 }: { size?: number }) {
     >
       <path
         d="M75 30 A38 38 0 1 0 75 70"
-        stroke="white"
+        className="stroke-slate-900 dark:stroke-white"
         strokeWidth="10"
         strokeLinecap="round"
         fill="none"
