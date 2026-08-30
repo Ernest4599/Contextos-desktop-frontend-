@@ -38,7 +38,7 @@ function DashboardLayout() {
       <div className="flex gap-2">
         <Lightbulb size={16} className="text-yellow-500 shrink-0 mt-0.5" />
         <div>
-          <p className="text-white text-sm font-medium">Tip</p>
+          <p className="text-slate-900 dark:text-white text-sm font-medium">Tip</p>
           <p className="text-slate-500 text-xs mt-0.5">Be specific and include constraints for the best results.</p>
         </div>
       </div>
@@ -66,7 +66,7 @@ function DashboardLayout() {
   )
 
   return (
-    <div className="flex bg-slate-900 h-dvh relative overflow-hidden">
+    <div className="flex bg-white dark:bg-slate-900 h-dvh relative overflow-hidden">
       {overlaySidebarOpen ? (
         <>
           <div
@@ -84,9 +84,9 @@ function DashboardLayout() {
             type="button"
             onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
-            className="hidden md:flex w-12 h-dvh bg-slate-950 border-r border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
+            className="hidden md:flex w-12 h-dvh bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           >
-            <Menu size={20} className="text-slate-400" />
+            <Menu size={20} className="text-slate-500 dark:text-slate-400" />
           </button>
 
           {/* Mobile floating hamburger — no rail/strip */}
@@ -94,9 +94,9 @@ function DashboardLayout() {
             type="button"
             onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
-            className="md:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-slate-950/90 border border-slate-800 backdrop-blur-sm hover:bg-slate-900 transition-colors"
+            className="md:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-white/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 backdrop-blur-sm hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           >
-            <Menu size={20} className="text-slate-400" />
+            <Menu size={20} className="text-slate-500 dark:text-slate-400" />
           </button>
         </>
       )}
