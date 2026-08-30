@@ -6,19 +6,19 @@ function Landing() {
   const navigate = useNavigate()
 
   return (
-    <div className="min-h-screen bg-slate-950 relative overflow-hidden">
+    <div className="min-h-screen bg-cream dark:bg-slate-950 relative overflow-hidden">
       <div className="absolute -left-40 top-1/3 w-96 h-96 rounded-full border border-blue-900/30" />
       <div className="absolute -right-40 top-1/3 w-96 h-96 rounded-full border border-blue-900/30" />
 
       <nav className="relative flex items-center justify-between px-4 py-4 sm:px-6 sm:py-5 md:px-10 md:py-6">
         <div className="flex items-center gap-2">
           <Logo size={28} />
-          <span className="text-white font-semibold text-lg">ContextOS</span>
+          <span className="text-slate-900 dark:text-white font-semibold text-lg">ContextOS</span>
         </div>
-        <div className="hidden md:flex items-center gap-8 text-slate-300 text-sm font-medium">
-          <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#how-it-works" className="hover:text-white transition-colors">How it Works</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+        <div className="hidden md:flex items-center gap-8 text-slate-600 dark:text-slate-300 text-sm font-medium">
+          <a href="#features" className="hover:text-slate-900 dark:hover:text-white transition-colors">Features</a>
+          <a href="#how-it-works" className="hover:text-slate-900 dark:hover:text-white transition-colors">How it Works</a>
+          <a href="#pricing" className="hover:text-slate-900 dark:hover:text-white transition-colors">Pricing</a>
         </div>
         <button
           type="button"
@@ -36,7 +36,7 @@ function Landing() {
           100% Private. Nothing Stored.
         </span>
 
-        <h1 className="text-5xl md:text-6xl font-bold text-white leading-tight mb-6">
+        <h1 className="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white leading-tight mb-6">
           Never restart
           <br />
           an AI project
@@ -44,7 +44,7 @@ function Landing() {
           <span className="text-blue-500">again.</span>
         </h1>
 
-        <p className="text-slate-400 text-lg max-w-xl mb-10">
+        <p className="text-slate-600 dark:text-slate-400 text-lg max-w-xl mb-10">
           ContextOS turns any AI conversation into a reusable Context Package so you can continue exactly where you left off — across any AI, anytime.
         </p>
 
@@ -57,7 +57,7 @@ function Landing() {
           <ArrowRight size={20} />
         </button>
 
-        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-500 text-sm">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-600 dark:text-slate-500 text-sm">
           <span className="flex items-center gap-2">
             <Shield size={16} />
             Private by design
