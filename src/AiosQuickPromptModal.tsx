@@ -41,20 +41,20 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6">
         {!prompt ? (
           <>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white text-lg font-semibold flex items-center gap-2">
+              <h2 className="text-slate-900 dark:text-white text-lg font-semibold flex items-center gap-2">
                 <Sparkles size={18} className="text-purple-400" />
                 Ask AIOS
               </h2>
-              <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-300">
+              <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
                 <X size={20} />
               </button>
             </div>
 
-            <p className="text-slate-400 text-sm mb-3">What do you need help creating?</p>
+            <p className="text-slate-600 dark:text-slate-400 text-sm mb-3">What do you need help creating?</p>
 
             {errorMsg && (
               <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-4 py-3 mb-4">
@@ -67,7 +67,7 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Tell AIOS what you need..."
-              className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 resize-none mb-4"
+              className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-500 resize-none mb-4"
             />
 
             <button
@@ -83,14 +83,14 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
         ) : (
           <>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-white text-lg font-semibold">Your Prompt</h2>
-              <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-300">
+              <h2 className="text-slate-900 dark:text-white text-lg font-semibold">Your Prompt</h2>
+              <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
                 <X size={20} />
               </button>
             </div>
 
-            <div className="border border-slate-800 rounded-xl p-4 mb-4 max-h-80 overflow-y-auto">
-              <pre className="text-slate-200 text-sm font-mono whitespace-pre-wrap leading-relaxed">
+            <div className="bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800 rounded-xl p-4 mb-4 max-h-80 overflow-y-auto">
+              <pre className="text-slate-800 dark:text-slate-200 text-sm font-mono whitespace-pre-wrap leading-relaxed">
                 {prompt}
               </pre>
             </div>

@@ -98,16 +98,16 @@ function AiosOverview() {
     <div className="flex-1 p-4 pb-24 overflow-y-auto md:p-8 md:pb-8">
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="text-purple-400" size={24} />
-        <h1 className="text-2xl font-semibold text-white">AIOS</h1>
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">AIOS</h1>
       </div>
-      <p className="text-slate-400 mb-6">Your AI identity layer. AIOS remembers what matters about you.</p>
+      <p className="text-slate-600 dark:text-slate-400 mb-6">Your AI identity layer. AIOS remembers what matters about you.</p>
 
       <div className="flex flex-col gap-6 items-stretch md:flex-row md:items-start">
         <div className="flex-1 min-w-0">
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6 md:p-5">
+          <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 mb-6 md:p-5">
             <div className="flex items-center gap-2 mb-1">
               <MessageSquareText size={18} className="text-purple-400" />
-              <h2 className="text-white font-medium">Tell AIOS something it should know</h2>
+              <h2 className="text-slate-900 dark:text-white font-medium">Tell AIOS something it should know</h2>
             </div>
             <p className="text-slate-500 text-sm mb-3">
               Add thoughts, notes, preferences, experiences, or anything that helps AI understand you better.
@@ -117,7 +117,7 @@ function AiosOverview() {
               onChange={(e) => setInput(e.target.value.slice(0, 2000))}
               placeholder="I prefer concise technical explanations..."
               rows={4}
-              className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-blue-600"
+              className="w-full bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg p-3 text-sm text-slate-900 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-600 resize-none focus:outline-none focus:border-blue-600"
             />
             <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
               <span className="text-slate-600 text-xs">{input.length} / 2000</span>
@@ -141,7 +141,7 @@ function AiosOverview() {
             <>
               <div className="flex flex-col gap-1 justify-between mb-4 sm:flex-row sm:items-center sm:gap-0">
                 <div>
-                  <h2 className="text-white font-medium">Your AI Identity</h2>
+                  <h2 className="text-slate-900 dark:text-white font-medium">Your AI Identity</h2>
                   <p className="text-slate-500 text-sm">Structured from everything you've shared with AIOS.</p>
                 </div>
                 <p className="text-slate-500 text-sm">{overview?.total_memories ?? 0} total memories</p>
@@ -156,10 +156,10 @@ function AiosOverview() {
                       key={key}
                       type="button"
                       onClick={() => navigate(`/aios/memories?category=${key}`)}
-                      className="text-left bg-slate-950 border border-slate-800 rounded-xl p-4 hover:border-slate-700 transition-colors"
+                      className="text-left bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
                     >
                       <Icon size={18} className="text-blue-400 mb-2" />
-                      <p className="text-white text-sm font-medium">{label}</p>
+                      <p className="text-slate-900 dark:text-white text-sm font-medium">{label}</p>
                       <p className="text-slate-500 text-xs mt-1">{count} item{count === 1 ? '' : 's'}</p>
                     </button>
                   )
@@ -171,42 +171,42 @@ function AiosOverview() {
 
         {!loading && !loadError && (
           <div className="w-full md:w-80 shrink-0 flex flex-col gap-6">
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
-              <h2 className="text-white font-medium mb-4">AIOS Summary</h2>
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 md:p-5">
+              <h2 className="text-slate-900 dark:text-white font-medium mb-4">AIOS Summary</h2>
               <div className="flex flex-col gap-3 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Total Memories</span>
-                  <span className="text-white font-medium">{overview?.total_memories ?? 0}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Total Memories</span>
+                  <span className="text-slate-900 dark:text-white font-medium">{overview?.total_memories ?? 0}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Categories</span>
-                  <span className="text-white font-medium">{categoryCount}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Categories</span>
+                  <span className="text-slate-900 dark:text-white font-medium">{categoryCount}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Last Updated</span>
-                  <span className="text-white font-medium">{formatRelativeTime(overview?.last_updated) || '—'}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Last Updated</span>
+                  <span className="text-slate-900 dark:text-white font-medium">{formatRelativeTime(overview?.last_updated) || '—'}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">Conversations Used</span>
-                  <span className="text-white font-medium">{overview?.conversations_used ?? 0}</span>
+                  <span className="text-slate-600 dark:text-slate-400">Conversations Used</span>
+                  <span className="text-slate-900 dark:text-white font-medium">{overview?.conversations_used ?? 0}</span>
                 </div>
               </div>
             </div>
 
             {strength && (
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
-                <h2 className="text-white font-medium mb-4">Identity Strength</h2>
+              <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 md:p-5">
+                <h2 className="text-slate-900 dark:text-white font-medium mb-4">Identity Strength</h2>
                 <div className="text-center">
-                  <div className="text-3xl font-semibold text-white">{strength.score}%</div>
+                  <div className="text-3xl font-semibold text-slate-900 dark:text-white">{strength.score}%</div>
                   <p className={`text-sm font-medium mt-1 ${strengthColor(strength.label)}`}>{strength.label}</p>
                   <p className="text-slate-500 text-xs mt-3">{strengthDescription(strength.label)}</p>
                 </div>
               </div>
             )}
 
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
+            <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 md:p-5">
               <div className="flex items-center justify-between mb-3">
-                <h2 className="text-white font-medium">Recent Memories</h2>
+                <h2 className="text-slate-900 dark:text-white font-medium">Recent Memories</h2>
                 <button
                   type="button"
                   onClick={() => navigate('/aios/memories')}
@@ -221,11 +221,11 @@ function AiosOverview() {
               <div className="flex flex-col gap-3">
                 {recent.slice(0, 5).map((m, i) => (
                   <div key={m.id} className="flex items-start justify-between gap-3 text-sm">
-                    <p className="text-slate-300">
-                      <span className="text-slate-600 mr-1">{i + 1}.</span>
+                    <p className="text-slate-700 dark:text-slate-300">
+                      <span className="text-slate-500 mr-1">{i + 1}.</span>
                       {m.content}
                     </p>
-                    <span className="text-slate-600 text-xs whitespace-nowrap shrink-0">
+                    <span className="text-slate-500 text-xs whitespace-nowrap shrink-0">
                       {formatRelativeTime(m.updated_at)}
                     </span>
                   </div>
