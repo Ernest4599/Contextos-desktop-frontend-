@@ -59,7 +59,7 @@ function DashboardLayout() {
   )
 
   return (
-    <div className="flex bg-slate-900 min-h-screen relative">
+    <div className="flex bg-slate-900 h-screen relative overflow-hidden">
       {overlaySidebarOpen ? (
         <>
           <div
