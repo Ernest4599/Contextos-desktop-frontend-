@@ -13,7 +13,7 @@ function applyTheme(theme: ThemeOption) {
 
 export function useTheme() {
   const [theme, setThemeState] = useState<ThemeOption>(
-    (localStorage.getItem('contextos_theme') as ThemeOption) || 'dark'
+    (localStorage.getItem('contextos_theme') as ThemeOption) || 'light'
   )
 
   useEffect(() => {
