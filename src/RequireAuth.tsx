@@ -8,21 +8,21 @@ function RequireAuth({ children, featureName }: { children: React.ReactNode; fea
 
   if (checking) {
     return (
-      <div className="flex-1 flex items-center justify-center h-screen">
-        <p className="text-slate-400 text-sm">Loading...</p>
+      <div className="flex-1 flex items-center justify-center h-dvh bg-cream dark:bg-transparent">
+        <p className="text-slate-600 dark:text-slate-400 text-sm">Loading...</p>
       </div>
     )
   }
 
   if (!isLoggedIn) {
     return (
-      <div className="flex-1 flex items-center justify-center h-screen p-6">
-        <div className="max-w-sm text-center border border-slate-800 rounded-2xl p-8">
+      <div className="flex-1 flex items-center justify-center h-dvh p-6 bg-cream dark:bg-transparent">
+        <div className="max-w-sm text-center border border-slate-200 dark:border-slate-800 rounded-2xl p-8">
           <div className="w-14 h-14 rounded-full bg-blue-600/10 flex items-center justify-center mx-auto mb-4">
-            <Lock size={24} className="text-blue-400" />
+            <Lock size={24} className="text-blue-500 dark:text-blue-400" />
           </div>
-          <h2 className="text-white text-lg font-semibold mb-2">Log in required for {featureName}</h2>
-          <p className="text-slate-400 text-sm mb-6">Sign in to sync your {featureName.toLowerCase()} across devices.</p>
+          <h2 className="text-slate-900 dark:text-white text-lg font-semibold mb-2">Log in required for {featureName}</h2>
+          <p className="text-slate-600 dark:text-slate-400 text-sm mb-6">Sign in to sync your {featureName.toLowerCase()} across devices.</p>
           <button
             type="button"
             onClick={() => navigate('/account')}
