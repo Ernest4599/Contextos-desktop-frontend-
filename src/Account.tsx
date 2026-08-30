@@ -218,8 +218,8 @@ function Account() {
         </div>
       </div>
 
-      {/* Right column */}
-      <div className="w-72 shrink-0 ml-auto">
+      {/* Right column — hidden on mobile, shown from md up */}
+      <div className="hidden md:block w-72 shrink-0 ml-auto">
         <div className="border border-slate-800 rounded-2xl p-6">
           <div className="flex flex-col items-center text-center mb-5">
             <div className="w-12 h-12 rounded-full bg-green-600/10 flex items-center justify-center mb-3">
