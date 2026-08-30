@@ -42,7 +42,7 @@ function QuickPrompt() {
   }
 
   return (
-    <div className="flex-1 flex flex-col gap-6 p-4 h-screen overflow-y-auto md:gap-8 md:p-6 lg:flex-row">
+    <div className="flex-1 flex flex-col gap-6 p-4 h-dvh overflow-y-auto md:gap-8 md:p-6 md:flex-row">
       {/* Center column */}
       <div className="flex-1 min-w-0">
         <div className="flex flex-col gap-3 items-start justify-between mb-2 sm:flex-row sm:items-center">
@@ -133,7 +133,7 @@ function QuickPrompt() {
       </div>
 
       {/* Right column */}
-      <div className="w-full lg:w-60 shrink-0 lg:ml-auto flex flex-col gap-4">
+      <div className="w-full md:w-60 shrink-0 md:ml-auto flex flex-col gap-4">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <h3 className="text-white font-semibold mb-4">What you'll get</h3>
           <p className="text-slate-400 text-xs mb-4">ContextOS will build a complete prompt including everything you provide.</p>
