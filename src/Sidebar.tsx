@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import {
   Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown,
-  Sparkles, Brain, User, Sliders, BookOpen, Target,
+  Sparkles, Brain, User, Sliders, BookOpen, Target, X,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import Logo from './Logo'
@@ -45,7 +45,7 @@ function displayNameFromEmail(email: string): string {
   return localPart.charAt(0).toUpperCase() + localPart.slice(1)
 }
 
-function Sidebar({ extra }: { extra?: ReactNode }) {
+function Sidebar({ extra, onClose }: { extra?: ReactNode; onClose?: () => void }) {
   const { email, isLoggedIn } = useAuth()
   const displayName = isLoggedIn && email ? displayNameFromEmail(email) : 'Aravind'
   const displayLabel = isLoggedIn && email ? email : 'Local Workspace'
@@ -59,13 +59,25 @@ function Sidebar({ extra }: { extra?: ReactNode }) {
   const [aiosOpen, setAiosOpen] = useState(isAiosRoute)
 
   return (
-    <aside className="w-64 bg-slate-950 border-r border-slate-800 h-screen flex flex-col p-4 overflow-y-auto">
-      <div className="flex items-center gap-2 mb-8 px-2">
-        <Logo size={58} />
-        <div>
-          <h1 className="text-white font-semibold text-sm leading-tight">ContextOS</h1>
-          <p className="text-slate-500 text-xs leading-tight">Never restart an AI project again.</p>
+    <aside className="w-64 max-w-[85vw] bg-slate-950 border-r border-slate-800 h-screen flex flex-col p-4 overflow-y-auto">
+      <div className="flex items-center justify-between mb-8 px-2">
+        <div className="flex items-center gap-2">
+          <Logo size={58} />
+          <div>
+            <h1 className="text-white font-semibold text-sm leading-tight">ContextOS</h1>
+            <p className="text-slate-500 text-xs leading-tight">Never restart an AI project again.</p>
+          </div>
         </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close sidebar"
+            className="p-1 rounded-lg text-slate-500 hover:bg-slate-800 hover:text-white transition-colors shrink-0"
+          >
+            <X size={18} />
+          </button>
+        )}
       </div>
 
       <nav className="flex flex-col gap-1">

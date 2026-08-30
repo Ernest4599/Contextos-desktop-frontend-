@@ -28,26 +28,26 @@ function Import() {
   }
 
   return (
-    <div className="flex-1 p-8 h-screen overflow-y-auto">
-      <div className="flex items-start justify-between mb-2">
-        <h1 className="text-3xl font-bold text-white">Import</h1>
+    <div className="flex-1 p-4 h-screen overflow-y-auto md:p-8">
+      <div className="flex flex-col gap-3 items-start justify-between mb-2 sm:flex-row sm:items-center">
+        <h1 className="text-2xl font-bold text-white md:text-3xl">Import</h1>
         <button
           type="button"
-          className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
         >
           <Info size={16} />
           How it works
         </button>
       </div>
-      <p className="text-slate-400 mb-8">Bring any AI conversation into ContextOS.</p>
+      <p className="text-slate-400 mb-6 md:mb-8">Bring any AI conversation into ContextOS.</p>
 
-      <div className="border border-slate-800 rounded-2xl p-8">
-        <div className="text-center mb-8">
-          <h2 className="text-white text-xl font-semibold mb-1">Choose how you want to import</h2>
+      <div className="border border-slate-800 rounded-2xl p-4 md:p-8">
+        <div className="text-center mb-6 md:mb-8">
+          <h2 className="text-white text-lg font-semibold mb-1 md:text-xl">Choose how you want to import</h2>
           <p className="text-slate-400 text-sm">We'll extract what matters and turn it into a Context Package.</p>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <div
             className={`border rounded-xl p-6 flex flex-col items-center text-center transition-colors ${
               activeMethod === 'link' ? 'border-blue-500 bg-blue-600/5' : 'border-slate-800'
@@ -108,13 +108,13 @@ function Import() {
 
         {activeMethod && (
           <>
-            <div className="flex items-center gap-4 my-8">
+            <div className="flex items-center gap-4 my-6 md:my-8">
               <div className="flex-1 h-px bg-slate-800" />
               <div className="flex-1 h-px bg-slate-800" />
             </div>
 
             {activeMethod === 'link' && (
-              <div className="border border-slate-800 rounded-2xl p-8">
+              <div className="border border-slate-800 rounded-2xl p-4 md:p-8">
                 <h3 className="text-white font-semibold mb-3">Paste your share link</h3>
                 <input
                   type="url"
@@ -127,7 +127,7 @@ function Import() {
             )}
 
             {activeMethod === 'paste' && (
-              <div className="border border-slate-800 rounded-2xl p-8">
+              <div className="border border-slate-800 rounded-2xl p-4 md:p-8">
                 <h3 className="text-white font-semibold mb-3">Paste your conversation</h3>
                 <textarea
                   rows={8}
@@ -142,7 +142,7 @@ function Import() {
             {activeMethod === 'upload' && (
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-14 px-8 cursor-pointer"
+                className="border-2 border-dashed border-slate-700 rounded-2xl flex flex-col items-center justify-center py-10 px-4 cursor-pointer md:py-14 md:px-8"
               >
                 <input
                   ref={fileInputRef}
@@ -152,11 +152,11 @@ function Import() {
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 />
                 <FileText size={32} className="text-slate-500 mb-4" />
-                <h3 className="text-white font-semibold mb-1">
+                <h3 className="text-white font-semibold mb-1 text-center break-all">
                   {file ? file.name : 'Drag & drop your file here'}
                 </h3>
                 <p className="text-slate-400 text-sm mb-5">{file ? 'Click to change' : 'or click to browse'}</p>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap justify-center gap-2">
                   <span className="border border-slate-700 text-slate-400 text-xs px-3 py-1.5 rounded-lg">.txt</span>
                   <span className="border border-slate-700 text-slate-400 text-xs px-3 py-1.5 rounded-lg">.md</span>
                   <span className="border border-slate-700 text-slate-400 text-xs px-3 py-1.5 rounded-lg">.html</span>
@@ -183,12 +183,12 @@ function Import() {
         Analyze Conversation
       </button>
 
-      <div className="flex items-center justify-between mt-6 px-2">
+      <div className="flex flex-col gap-3 mt-6 px-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 text-slate-400 text-sm">
-          <Lock size={16} />
+          <Lock size={16} className="shrink-0" />
           <p>All processing happens locally on your device. Your conversation is never stored.</p>
         </div>
-        <span className="flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 text-xs font-medium px-3 py-1.5 rounded-lg">
+        <span className="flex items-center gap-1.5 bg-green-500/10 border border-green-500/20 text-green-500 text-xs font-medium px-3 py-1.5 rounded-lg w-fit">
           <ShieldCheck size={14} />
           100% Private
         </span>

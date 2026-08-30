@@ -95,16 +95,16 @@ function AiosOverview() {
   const strength = overview?.identity_strength
 
   return (
-    <div className="flex-1 p-8 overflow-y-auto">
+    <div className="flex-1 p-4 overflow-y-auto md:p-8">
       <div className="flex items-center gap-2 mb-1">
         <Sparkles className="text-purple-400" size={24} />
         <h1 className="text-2xl font-semibold text-white">AIOS</h1>
       </div>
       <p className="text-slate-400 mb-6">Your AI identity layer. AIOS remembers what matters about you.</p>
 
-      <div className="flex gap-6 items-start">
+      <div className="flex flex-col gap-6 items-stretch lg:flex-row lg:items-start">
         <div className="flex-1 min-w-0">
-          <div className="bg-slate-950 border border-slate-800 rounded-xl p-5 mb-6">
+          <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 mb-6 md:p-5">
             <div className="flex items-center gap-2 mb-1">
               <MessageSquareText size={18} className="text-purple-400" />
               <h2 className="text-white font-medium">Tell AIOS something it should know</h2>
@@ -119,7 +119,7 @@ function AiosOverview() {
               rows={4}
               className="w-full bg-slate-900 border border-slate-800 rounded-lg p-3 text-sm text-slate-200 placeholder:text-slate-600 resize-none focus:outline-none focus:border-blue-600"
             />
-            <div className="flex items-center justify-between mt-3">
+            <div className="flex flex-wrap items-center justify-between gap-2 mt-3">
               <span className="text-slate-600 text-xs">{input.length} / 2000</span>
               <button
                 type="button"
@@ -139,7 +139,7 @@ function AiosOverview() {
 
           {!loading && !loadError && (
             <>
-              <div className="flex items-center justify-between mb-4">
+              <div className="flex flex-col gap-1 justify-between mb-4 sm:flex-row sm:items-center sm:gap-0">
                 <div>
                   <h2 className="text-white font-medium">Your AI Identity</h2>
                   <p className="text-slate-500 text-sm">Structured from everything you've shared with AIOS.</p>
@@ -170,8 +170,8 @@ function AiosOverview() {
         </div>
 
         {!loading && !loadError && (
-          <div className="w-80 shrink-0 flex flex-col gap-6">
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+          <div className="w-full lg:w-80 shrink-0 flex flex-col gap-6">
+            <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
               <h2 className="text-white font-medium mb-4">AIOS Summary</h2>
               <div className="flex flex-col gap-3 text-sm">
                 <div className="flex items-center justify-between">
@@ -194,7 +194,7 @@ function AiosOverview() {
             </div>
 
             {strength && (
-              <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+              <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
                 <h2 className="text-white font-medium mb-4">Identity Strength</h2>
                 <div className="text-center">
                   <div className="text-3xl font-semibold text-white">{strength.score}%</div>
@@ -204,7 +204,7 @@ function AiosOverview() {
               </div>
             )}
 
-            <div className="bg-slate-950 border border-slate-800 rounded-xl p-5">
+            <div className="bg-slate-950 border border-slate-800 rounded-xl p-4 md:p-5">
               <div className="flex items-center justify-between mb-3">
                 <h2 className="text-white font-medium">Recent Memories</h2>
                 <button
@@ -233,7 +233,7 @@ function AiosOverview() {
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-5">
+            <div className="bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-4 md:p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={16} className="text-white" />
                 <h2 className="text-white font-medium">Use AIOS in Quick Prompt</h2>

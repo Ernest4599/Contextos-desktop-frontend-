@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { Lightbulb, Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
@@ -25,6 +25,13 @@ import AiosMemories from './AiosMemories'
 function DashboardLayout() {
   const location = useLocation()
   const [overlaySidebarOpen, setOverlaySidebarOpen] = useState(false)
+
+  useEffect(() => {
+    document.body.style.overflow = overlaySidebarOpen ? 'hidden' : ''
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [overlaySidebarOpen])
 
   const tipExtra =
     location.pathname === '/prompt-ready' ? (
@@ -67,18 +74,31 @@ function DashboardLayout() {
             onClick={() => setOverlaySidebarOpen(false)}
           />
           <div className="fixed left-0 top-0 z-50 h-screen">
-            <Sidebar extra={tipExtra} />
+            <Sidebar extra={tipExtra} onClose={() => setOverlaySidebarOpen(false)} />
           </div>
         </>
       ) : (
-        <button
-          type="button"
-          onClick={() => setOverlaySidebarOpen(true)}
-          aria-label="Open sidebar"
-          className="w-12 h-screen bg-slate-950 border-r border-slate-800 flex items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
-        >
-          <Menu size={20} className="text-slate-400" />
-        </button>
+        <>
+          {/* Desktop collapsed rail — unchanged, hidden on mobile */}
+          <button
+            type="button"
+            onClick={() => setOverlaySidebarOpen(true)}
+            aria-label="Open sidebar"
+            className="hidden md:flex w-12 h-screen bg-slate-950 border-r border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
+          >
+            <Menu size={20} className="text-slate-400" />
+          </button>
+
+          {/* Mobile floating hamburger — no rail/strip */}
+          <button
+            type="button"
+            onClick={() => setOverlaySidebarOpen(true)}
+            aria-label="Open sidebar"
+            className="md:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-slate-950/90 border border-slate-800 backdrop-blur-sm hover:bg-slate-900 transition-colors"
+          >
+            <Menu size={20} className="text-slate-400" />
+          </button>
+        </>
       )}
       <div className="flex-1 flex flex-col min-w-0">
         <TopNav />
