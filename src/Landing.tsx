@@ -10,7 +10,7 @@ function Landing() {
       <div className="absolute -left-40 top-1/3 w-96 h-96 rounded-full border border-blue-900/30" />
       <div className="absolute -right-40 top-1/3 w-96 h-96 rounded-full border border-blue-900/30" />
 
-      <nav className="relative flex items-center justify-between px-10 py-6">
+      <nav className="relative flex items-center justify-between px-4 py-4 sm:px-6 sm:py-5 md:px-10 md:py-6">
         <div className="flex items-center gap-2">
           <Logo size={28} />
           <span className="text-white font-semibold text-lg">ContextOS</span>
@@ -23,7 +23,7 @@ function Landing() {
         <button
           type="button"
           onClick={() => navigate('/home')}
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-5 py-2.5 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-3 py-2 rounded-lg transition-colors sm:px-5 sm:py-2.5"
         >
           Get Started Free
           <ArrowRight size={16} />
@@ -57,17 +57,17 @@ function Landing() {
           <ArrowRight size={20} />
         </button>
 
-        <div className="flex items-center gap-6 text-slate-500 text-sm">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-slate-500 text-sm">
           <span className="flex items-center gap-2">
             <Shield size={16} />
             Private by design
           </span>
-          <span>·</span>
+          <span className="hidden sm:inline">·</span>
           <span className="flex items-center gap-2">
             <EyeOff size={16} />
             Nothing stored
           </span>
-          <span>·</span>
+          <span className="hidden sm:inline">·</span>
           <span className="flex items-center gap-2">
             <Users size={16} />
             You own your data
