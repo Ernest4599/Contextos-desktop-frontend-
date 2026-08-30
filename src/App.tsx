@@ -66,14 +66,14 @@ function DashboardLayout() {
   )
 
   return (
-    <div className="flex bg-slate-900 h-screen relative overflow-hidden">
+    <div className="flex bg-slate-900 h-dvh relative overflow-hidden">
       {overlaySidebarOpen ? (
         <>
           <div
             className="fixed inset-0 bg-black/50 z-40"
             onClick={() => setOverlaySidebarOpen(false)}
           />
-          <div className="fixed left-0 top-0 z-50 h-screen">
+          <div className="fixed left-0 top-0 z-50 h-dvh">
             <Sidebar extra={tipExtra} onClose={() => setOverlaySidebarOpen(false)} />
           </div>
         </>
@@ -84,7 +84,7 @@ function DashboardLayout() {
             type="button"
             onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
-            className="hidden md:flex w-12 h-screen bg-slate-950 border-r border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
+            className="hidden md:flex w-12 h-dvh bg-slate-950 border-r border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-900 transition-colors"
           >
             <Menu size={20} className="text-slate-400" />
           </button>
