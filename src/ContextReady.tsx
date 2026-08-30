@@ -25,11 +25,11 @@ function ContextReady() {
   }
 
   return (
-    <div className="flex-1 p-6 h-screen overflow-y-auto">
+    <div className="flex-1 p-6 h-dvh overflow-y-auto bg-cream dark:bg-transparent">
       <div className="flex items-center justify-end mb-6">
         <button
           type="button"
-          className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+          className="flex items-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
         >
           <MessageSquare size={16} />
           Give Feedback
@@ -41,31 +41,31 @@ function ContextReady() {
           <div className="w-20 h-20 rounded-full bg-green-500 flex items-center justify-center mb-6 shadow-[0_0_60px_rgba(34,197,94,0.3)]">
             <Check size={36} className="text-white" strokeWidth={3} />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Context Ready</h1>
-          <p className="text-slate-400 mb-5">Your prompt is ready to paste into any AI chat.</p>
-          <span className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm px-4 py-2 rounded-full">
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Context Ready</h1>
+          <p className="text-slate-600 dark:text-slate-400 mb-5">Your prompt is ready to paste into any AI chat.</p>
+          <span className="flex items-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm px-4 py-2 rounded-full">
             <Clock size={14} />
             {state.summary?.total_items_extracted ?? 0} items extracted
           </span>
         </div>
 
         <div className="flex items-center justify-between mb-3">
-          <p className="text-blue-400 text-sm font-semibold tracking-wide">GENERATED CONTEXT</p>
+          <p className="text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wide">GENERATED CONTEXT</p>
           <span className="flex items-center gap-1.5 text-slate-500 text-sm">
             {generatedText.length} characters
             <Info size={14} />
           </span>
         </div>
 
-        <div className="relative border border-slate-800 rounded-2xl p-6">
+        <div className="relative border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
           <button
             type="button"
             onClick={handleCopy}
-            className="absolute top-4 right-4 text-slate-500 hover:text-slate-300 border border-slate-700 rounded-lg p-2 transition-colors"
+            className="absolute top-4 right-4 text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg p-2 transition-colors"
           >
             <Copy size={16} />
           </button>
-          <pre className="text-slate-200 text-sm font-mono whitespace-pre-wrap leading-relaxed pr-10">
+          <pre className="text-slate-700 dark:text-slate-200 text-sm font-mono whitespace-pre-wrap leading-relaxed pr-10">
             {generatedText}
           </pre>
         </div>
