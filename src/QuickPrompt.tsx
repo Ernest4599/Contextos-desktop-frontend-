@@ -42,22 +42,22 @@ function QuickPrompt() {
   }
 
   return (
-    <div className="flex-1 flex gap-8 p-6 h-screen overflow-y-auto">
+    <div className="flex-1 flex flex-col gap-6 p-4 h-screen overflow-y-auto md:gap-8 md:p-6 lg:flex-row">
       {/* Center column */}
-      <div className="flex-1">
-        <div className="flex items-start justify-between mb-2">
-          <h1 className="text-3xl font-bold text-white">Quick Prompt</h1>
+      <div className="flex-1 min-w-0">
+        <div className="flex flex-col gap-3 items-start justify-between mb-2 sm:flex-row sm:items-center">
+          <h1 className="text-2xl font-bold text-white md:text-3xl">Quick Prompt</h1>
           <button
             type="button"
-            className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors"
+            className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors shrink-0"
           >
             <Lightbulb size={16} />
             Examples
           </button>
         </div>
-        <p className="text-slate-400 mb-8">Build a prompt from scratch — no conversation needed.</p>
+        <p className="text-slate-400 mb-6 md:mb-8">Build a prompt from scratch — no conversation needed.</p>
 
-        <div className="border border-slate-800 rounded-2xl p-6">
+        <div className="border border-slate-800 rounded-2xl p-4 md:p-6">
           {errorMsg && (
             <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
               {errorMsg}
@@ -125,15 +125,15 @@ function QuickPrompt() {
             {!loading && <ArrowRight size={18} />}
           </button>
 
-          <div className="flex items-center justify-center gap-2 mt-4 text-slate-400 text-sm">
-            <ShieldCheck size={14} className="text-green-500" />
+          <div className="flex items-center justify-center gap-2 mt-4 text-slate-400 text-sm text-center">
+            <ShieldCheck size={14} className="text-green-500 shrink-0" />
             <p>Nothing is stored on our side beyond generating this prompt.</p>
           </div>
         </div>
       </div>
 
       {/* Right column */}
-      <div className="w-60 shrink-0 ml-auto flex flex-col gap-4">
+      <div className="w-full lg:w-60 shrink-0 lg:ml-auto flex flex-col gap-4">
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4">
           <h3 className="text-white font-semibold mb-4">What you'll get</h3>
           <p className="text-slate-400 text-xs mb-4">ContextOS will build a complete prompt including everything you provide.</p>
