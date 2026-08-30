@@ -2,6 +2,7 @@ import Hero from './home/Hero'
 import EveryAI from './home/EveryAI'
 import Problem from './home/Problem'
 import Solution from './home/Solution'
+import HowItWorks from './home/HowItWorks'
 
 function Home() {
   return (
@@ -10,6 +11,7 @@ function Home() {
       <EveryAI />
       <Problem />
       <Solution />
+      <HowItWorks />
     </div>
   )
 }
