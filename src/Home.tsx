@@ -6,7 +6,7 @@ import HowItWorks from './home/HowItWorks'
 
 function Home() {
   return (
-    <div className="bg-slate-900 text-white">
+    <div className="bg-cream text-slate-900 dark:bg-slate-900 dark:text-white">
       <Hero />
       <EveryAI />
       <Problem />
