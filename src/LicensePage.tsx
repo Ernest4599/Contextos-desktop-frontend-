@@ -81,27 +81,27 @@ function LicensePage() {
   }
 
   return (
-    <div className="flex-1 p-6 h-screen overflow-y-auto max-w-2xl mx-auto w-full">
+    <div className="flex-1 p-6 h-dvh overflow-y-auto max-w-2xl mx-auto w-full bg-cream dark:bg-transparent">
       <button
         type="button"
         onClick={() => navigate('/settings')}
-        className="flex items-center gap-2 text-slate-400 hover:text-white text-sm mb-6 transition-colors"
+        className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-sm mb-6 transition-colors"
       >
         <ArrowLeft size={16} />
         Back to Settings
       </button>
 
-      <h1 className="text-2xl font-bold text-white mb-1">My License</h1>
-      <p className="text-slate-400 mb-8">Plan, status, and recovery.</p>
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">My License</h1>
+      <p className="text-slate-600 dark:text-slate-400 mb-8">Plan, status, and recovery.</p>
 
       {(authChecking || loading) && <p className="text-slate-500 text-sm">Loading...</p>}
 
       {!authChecking && !loading && !license && !isLoggedIn && (
-        <div className="border border-slate-800 rounded-2xl p-6">
+        <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
           <div className="w-12 h-12 rounded-full bg-blue-600/10 flex items-center justify-center mb-4">
-            <Key size={22} className="text-blue-400" />
+            <Key size={22} className="text-blue-500 dark:text-blue-400" />
           </div>
-          <h2 className="text-white font-medium mb-1">Enter your license number</h2>
+          <h2 className="text-slate-900 dark:text-white font-medium mb-1">Enter your license number</h2>
           <p className="text-slate-500 text-sm mb-4">You don't need an account to view a standalone license.</p>
 
           {verifyError && (
@@ -115,7 +115,7 @@ function LicensePage() {
             value={manualKey}
             onChange={(e) => setManualKey(e.target.value)}
             placeholder="CTX-XXXX-XXXX-XXXX"
-            className="w-full bg-slate-950 border border-slate-700 text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono mb-4"
+            className="w-full bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white text-sm rounded-lg px-4 py-3 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:border-blue-500 font-mono mb-4"
           />
 
           <button
@@ -130,9 +130,9 @@ function LicensePage() {
       )}
 
       {!authChecking && !loading && !license && isLoggedIn && loadError && (
-        <div className="border border-slate-800 rounded-2xl p-8 text-center">
-          <Star size={28} className="text-slate-600 mx-auto mb-3" />
-          <p className="text-white font-medium mb-1">No license found</p>
+        <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-8 text-center">
+          <Star size={28} className="text-slate-400 dark:text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-900 dark:text-white font-medium mb-1">No license found</p>
           <p className="text-slate-500 text-sm mb-6">{loadError}</p>
           <button
             type="button"
@@ -146,14 +146,14 @@ function LicensePage() {
 
       {!loading && license && (
         <>
-          <div className="border border-slate-800 rounded-2xl p-6 mb-6">
+          <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-6 mb-6">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <Star size={18} className="text-blue-400" />
-                <span className="text-white font-semibold capitalize">{license.plan} Plan</span>
+                <Star size={18} className="text-blue-500 dark:text-blue-400" />
+                <span className="text-slate-900 dark:text-white font-semibold capitalize">{license.plan} Plan</span>
               </div>
               <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                license.status === 'active' ? 'bg-green-500/10 text-green-400' : 'bg-slate-700 text-slate-300'
+                license.status === 'active' ? 'bg-green-500/10 text-green-600 dark:text-green-400' : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
               }`}>
                 {license.status}
               </span>
@@ -161,23 +161,23 @@ function LicensePage() {
 
             <label className="text-slate-500 text-xs block mb-1">License Key</label>
             <div className="flex items-center gap-2">
-              <code className="flex-1 bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-sm font-mono">
+              <code className="flex-1 bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 text-sm font-mono">
                 {license.license_key}
               </code>
               <button
                 type="button"
                 onClick={handleCopy}
-                className="text-slate-500 hover:text-slate-300 border border-slate-700 rounded-lg p-2 transition-colors"
+                className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 border border-slate-300 dark:border-slate-700 rounded-lg p-2 transition-colors"
               >
-                {copied ? <Check size={16} className="text-green-400" /> : <Copy size={16} />}
+                {copied ? <Check size={16} className="text-green-500 dark:text-green-400" /> : <Copy size={16} />}
               </button>
             </div>
           </div>
 
           {isLoggedIn && (
-            <div className="border border-slate-800 rounded-2xl p-6">
-              <h2 className="text-white font-semibold mb-2">Recovery Code</h2>
-              <p className="text-slate-400 text-sm mb-4">
+            <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-6">
+              <h2 className="text-slate-900 dark:text-white font-semibold mb-2">Recovery Code</h2>
+              <p className="text-slate-600 dark:text-slate-400 text-sm mb-4">
                 Lost or used a recovery code? Generate a new one to replace it.
               </p>
 
@@ -189,8 +189,8 @@ function LicensePage() {
 
               {rotateResult ? (
                 <div className="border border-green-600/40 bg-green-600/10 rounded-xl px-4 py-4">
-                  <p className="text-green-400 text-sm font-medium mb-2">New recovery code generated — save it now:</p>
-                  <code className="block bg-slate-950 border border-slate-800 rounded-lg px-3 py-2 text-slate-200 text-sm font-mono mb-2">
+                  <p className="text-green-600 dark:text-green-400 text-sm font-medium mb-2">New recovery code generated — save it now:</p>
+                  <code className="block bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-slate-800 dark:text-slate-200 text-sm font-mono mb-2">
                     {rotateResult.new_code}
                   </code>
                   <p className="text-slate-500 text-xs">{rotateResult.remaining} recovery codes now active.</p>
@@ -200,7 +200,7 @@ function LicensePage() {
                   type="button"
                   disabled={rotating}
                   onClick={handleRotate}
-                  className="flex items-center gap-2 border border-slate-700 text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-slate-800 disabled:opacity-60 transition-colors"
+                  className="flex items-center gap-2 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-sm font-medium px-4 py-2.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-60 transition-colors"
                 >
                   <RefreshCw size={16} className={rotating ? 'animate-spin' : ''} />
                   {rotating ? 'Generating...' : 'Generate New Code'}
