@@ -66,7 +66,7 @@ function DashboardLayout() {
   )
 
   return (
-    <div className="flex bg-white dark:bg-slate-900 h-dvh relative overflow-hidden">
+    <div className="flex bg-cream dark:bg-slate-900 h-dvh relative overflow-hidden">
       {overlaySidebarOpen ? (
         <>
           <div
@@ -84,7 +84,7 @@ function DashboardLayout() {
             type="button"
             onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
-            className="hidden md:flex w-12 h-dvh bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            className="hidden md:flex w-12 h-dvh bg-cream dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 items-start justify-center pt-4 shrink-0 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           >
             <Menu size={20} className="text-slate-500 dark:text-slate-400" />
           </button>
@@ -94,7 +94,7 @@ function DashboardLayout() {
             type="button"
             onClick={() => setOverlaySidebarOpen(true)}
             aria-label="Open sidebar"
-            className="md:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-white/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 backdrop-blur-sm hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
+            className="md:hidden fixed top-3 left-3 z-30 p-2 rounded-lg bg-cream/90 dark:bg-slate-950/90 border border-slate-200 dark:border-slate-800 backdrop-blur-sm hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
           >
             <Menu size={20} className="text-slate-500 dark:text-slate-400" />
           </button>

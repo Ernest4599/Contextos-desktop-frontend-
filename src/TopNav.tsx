@@ -15,7 +15,7 @@ function TopNav() {
   const location = useLocation()
 
   return (
-    <div className="flex items-center justify-center gap-1 px-2 py-3 border-b border-slate-800 overflow-x-auto shrink-0 sm:gap-2 sm:px-4">
+    <div className="flex items-center justify-center gap-1 px-2 py-3 border-b border-slate-200 dark:border-slate-800 overflow-x-auto shrink-0 sm:gap-2 sm:px-4">
       {topNavItems.map(({ to, label, icon: Icon }) => {
         const isActive = location.pathname === to || location.pathname.startsWith(`${to}/`)
         return (
@@ -26,8 +26,8 @@ function TopNav() {
             title={label}
             className={`flex items-center gap-2 px-2.5 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap shrink-0 sm:px-3 ${
               isActive
-                ? 'bg-blue-600/20 text-blue-400'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-white'
+                ? 'bg-blue-600/20 text-blue-600 dark:text-blue-400'
+                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <Icon size={16} />

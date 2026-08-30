@@ -33,7 +33,7 @@ function Settings() {
   }
 
   return (
-    <div className="flex-1 p-6 h-screen overflow-y-auto bg-white dark:bg-transparent">
+    <div className="flex-1 p-6 h-screen overflow-y-auto bg-cream dark:bg-transparent">
       <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Settings</h1>
       <p className="text-slate-600 dark:text-slate-400 mb-8">Manage your app preferences</p>
 

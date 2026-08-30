@@ -59,7 +59,7 @@ function Sidebar({ extra, onClose }: { extra?: ReactNode; onClose?: () => void }
   const [aiosOpen, setAiosOpen] = useState(isAiosRoute)
 
   return (
-    <aside className="w-64 max-w-[85vw] bg-white dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-dvh flex flex-col p-4 overflow-y-auto">
+    <aside className="w-64 max-w-[85vw] bg-cream dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-dvh flex flex-col p-4 overflow-y-auto">
       <div className="flex items-center justify-between mb-8 px-2">
         <div className="flex items-center gap-2">
           <Logo size={58} />
