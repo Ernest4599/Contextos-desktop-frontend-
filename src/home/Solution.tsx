@@ -40,9 +40,9 @@ function PackageColumn({ title, items }: { title: string; items: string[] }) {
 function Solution() {
   return (
     <section className="border-b border-slate-800/60">
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-[clamp(20px,3vw,48px)] px-[clamp(16px,4vw,96px)] py-[clamp(24px,4vw,64px)] lg:flex-row lg:items-start">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-[clamp(20px,3vw,48px)] px-[clamp(16px,4vw,96px)] py-[clamp(24px,4vw,64px)] md:flex-row md:items-start">
         {/* LEFT COPY */}
-        <div className="w-full lg:w-[clamp(220px,26vw,380px)] lg:shrink-0">
+        <div className="w-full md:w-[clamp(220px,26vw,380px)] md:shrink-0">
           <p className="mb-[clamp(4px,0.6vw,10px)] text-[clamp(8px,0.75vw,12px)] font-bold tracking-[0.2em] text-blue-400">
             THE SOLUTION
           </p>

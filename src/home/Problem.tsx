@@ -90,9 +90,9 @@ function Problem() {
           </a>
         </div>
 
-        <div className="flex items-center justify-center gap-[clamp(8px,2vw,32px)]">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-[clamp(8px,2vw,32px)]">
           <ConversationPanel />
-          <div className="flex h-[clamp(24px,4vw,48px)] w-[clamp(24px,4vw,48px)] shrink-0 items-center justify-center rounded-full bg-blue-600 shadow-lg shadow-blue-900/40">
+          <div className="flex h-[clamp(24px,4vw,48px)] w-[clamp(24px,4vw,48px)] shrink-0 items-center justify-center rounded-full bg-blue-600 shadow-lg shadow-blue-900/40 rotate-90 md:rotate-0">
             <ArrowRight className="h-[clamp(12px,2vw,20px)] w-[clamp(12px,2vw,20px)] text-white" />
           </div>
           <NewChatPanel />

@@ -31,7 +31,7 @@ function TopNav() {
             }`}
           >
             <Icon size={16} />
-            <span className="hidden sm:inline">{label}</span>
+            <span className="hidden md:inline">{label}</span>
           </button>
         )
       })}
