@@ -36,10 +36,11 @@ function DashboardLayout() {
     }
   }, [overlaySidebarOpen])
 
-  if (loading) return null
-
-  if (!accepted && location.pathname !== '/home') {
-    return <Navigate to="/home" replace />
+  if (location.pathname !== '/home') {
+    if (loading) return null
+    if (!accepted) {
+      return <Navigate to="/home" replace />
+    }
   }
 
   const tipExtra =
