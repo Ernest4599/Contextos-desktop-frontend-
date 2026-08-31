@@ -80,7 +80,7 @@ function AiosMemories() {
   }
 
   return (
-    <div className="flex-1 p-8 overflow-y-auto">
+    <div className="flex-1 p-8 h-dvh overflow-y-auto bg-cream dark:bg-transparent">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-semibold text-slate-900 dark:text-white mb-1">Memory</h1>
@@ -139,7 +139,7 @@ function AiosMemories() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <p className="text-slate-800 dark:text-slate-200 text-sm">{m.content}</p>
-                  <span className="text-slate-600 text-xs mt-1 inline-block capitalize">
+                  <span className="text-slate-500 dark:text-slate-600 text-xs mt-1 inline-block capitalize">
                     {m.category.replace('_', ' ')}
                   </span>
                 </div>
@@ -155,7 +155,7 @@ function AiosMemories() {
                     type="button"
                     onClick={() => handleDelete(m.id)}
                     disabled={deletingId === m.id}
-                    className="p-1.5 text-slate-500 hover:text-red-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
+                    className="p-1.5 text-slate-500 hover:text-red-500 dark:hover:text-red-400 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800"
                   >
                     <Trash2 size={14} />
                   </button>
