@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Lightbulb, Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
 import Landing from './Landing'
@@ -21,10 +21,13 @@ import UpgradePage from './UpgradePage'
 import AiosPreferencesPage from './AiosPreferencesPage'
 import AiosOverview from './AiosOverview'
 import AiosMemories from './AiosMemories'
+import TermsPage from './TermsPage'
+import { TermsProvider, useTerms } from './lib/TermsContext'
 
 function DashboardLayout() {
   const location = useLocation()
   const [overlaySidebarOpen, setOverlaySidebarOpen] = useState(false)
+  const { accepted, loading } = useTerms()
 
   useEffect(() => {
     document.body.style.overflow = overlaySidebarOpen ? 'hidden' : ''
@@ -32,6 +35,12 @@ function DashboardLayout() {
       document.body.style.overflow = ''
     }
   }, [overlaySidebarOpen])
+
+  if (loading) return null
+
+  if (!accepted && location.pathname !== '/home') {
+    return <Navigate to="/home" replace />
+  }
 
   const tipExtra =
     location.pathname === '/prompt-ready' ? (
@@ -112,7 +121,15 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
-      <Route path="/*" element={<DashboardLayout />} />
+      <Route path="/terms" element={<TermsPage />} />
+      <Route
+        path="/*"
+        element={
+          <TermsProvider>
+            <DashboardLayout />
+          </TermsProvider>
+        }
+      />
     </Routes>
   )
 }
