@@ -97,7 +97,7 @@ function AiosOverview() {
   return (
     <div className="flex-1 p-4 pb-24 overflow-y-auto md:p-8 md:pb-8">
       <div className="flex items-center gap-2 mb-1">
-        <Sparkles className="text-purple-400" size={24} />
+        <Sparkles className="text-blue-400" size={24} />
         <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">AIOS</h1>
       </div>
       <p className="text-slate-600 dark:text-slate-400 mb-6">Your AI identity layer. AIOS remembers what matters about you.</p>
@@ -106,7 +106,7 @@ function AiosOverview() {
         <div className="flex-1 min-w-0">
           <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 mb-6 md:p-5">
             <div className="flex items-center gap-2 mb-1">
-              <MessageSquareText size={18} className="text-purple-400" />
+              <MessageSquareText size={18} className="text-blue-400" />
               <h2 className="text-slate-900 dark:text-white font-medium">Tell AIOS something it should know</h2>
             </div>
             <p className="text-slate-500 text-sm mb-3">
@@ -234,7 +234,7 @@ function AiosOverview() {
             </div>
 
             {/* DESKTOP: unchanged gradient card */}
-            <div className="hidden md:block bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl p-4 md:p-5">
+            <div className="hidden md:block bg-gradient-to-br from-blue-800 to-blue-950 rounded-xl p-4 md:p-5">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles size={16} className="text-white" />
                 <h2 className="text-white font-medium">Use AIOS in Quick Prompt</h2>
@@ -260,7 +260,7 @@ function AiosOverview() {
         <button
           type="button"
           onClick={() => setShowQuickPromptModal(true)}
-          className="md:hidden fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-3 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-5 py-3.5 text-white shadow-2xl shadow-black/40"
+          className="md:hidden fixed inset-x-4 bottom-4 z-40 flex items-center justify-between gap-3 rounded-full bg-gradient-to-r from-blue-800 to-blue-950 px-5 py-3.5 text-white shadow-2xl shadow-black/40"
         >
           <span className="flex items-center gap-2 text-sm font-medium">
             <Sparkles size={16} />

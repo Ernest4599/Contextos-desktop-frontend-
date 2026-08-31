@@ -65,7 +65,7 @@ function Hero() {
         {/* RIGHT VISUAL */}
         <div className="relative mt-8 h-[220px] min-w-0 sm:h-[280px] md:mt-0 md:h-[clamp(100px,30vw,400px)]">
           {/* Embedded hero image with glow border + deep shadow */}
-          <div className="absolute inset-x-0 top-0 z-0 aspect-video w-full rounded-xl p-[2px] bg-gradient-to-br from-blue-500/50 via-blue-400/20 to-purple-500/30 shadow-[0_25px_70px_-15px_rgba(30,58,138,0.5)] dark:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.7)] md:left-[-60px] md:top-[calc(clamp(28px,4.5vw,64px)*-1)] md:w-[110%] md:rounded-[clamp(6px,1.2vw,20px)]">
+          <div className="absolute inset-x-0 top-0 z-0 aspect-video w-full rounded-xl p-[2px] bg-gradient-to-br from-blue-500/50 via-blue-400/20 to-blue-700/30 shadow-[0_25px_70px_-15px_rgba(30,58,138,0.5)] dark:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.7)] md:left-[-60px] md:top-[calc(clamp(28px,4.5vw,64px)*-1)] md:w-[110%] md:rounded-[clamp(6px,1.2vw,20px)]">
             <div className="relative h-full w-full overflow-hidden rounded-[10px] md:rounded-[clamp(5px,1vw,18px)]">
               <img
                 src={homeHeroImage}

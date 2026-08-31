@@ -46,7 +46,7 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
           <>
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-slate-900 dark:text-white text-lg font-semibold flex items-center gap-2">
-                <Sparkles size={18} className="text-purple-400" />
+                <Sparkles size={18} className="text-blue-400" />
                 Ask AIOS
               </h2>
               <button type="button" onClick={onClose} className="text-slate-500 hover:text-slate-700 dark:hover:text-slate-300">
@@ -74,7 +74,7 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
               type="button"
               disabled={loading}
               onClick={handleSend}
-              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl transition-all"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-800 to-blue-950 hover:from-blue-900 hover:to-blue-950 disabled:opacity-60 text-white font-semibold text-sm py-3 rounded-xl transition-all"
             >
               {loading ? 'Thinking...' : 'Send'}
               {!loading && <Send size={16} />}

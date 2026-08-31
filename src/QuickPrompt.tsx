@@ -118,7 +118,7 @@ function QuickPrompt() {
             type="button"
             disabled={loading}
             onClick={handleGenerate}
-            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60 text-white font-semibold text-sm py-3.5 rounded-xl transition-all"
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-800 to-blue-950 hover:from-blue-900 hover:to-blue-950 disabled:opacity-60 text-white font-semibold text-sm py-3.5 rounded-xl transition-all"
           >
             <Sparkles size={18} />
             {loading ? 'Generating...' : 'Generate Prompt'}
