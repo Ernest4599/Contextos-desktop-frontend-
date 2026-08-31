@@ -731,22 +731,6 @@ Your violation of applicable law.
 
 ---
 
-37. GOVERNING LAW
-
-These Terms are governed by the laws of:
-
-[JURISDICTION]
-
-without regard to conflict-of-law principles, except where applicable law requires otherwise.
-
-The courts located in:
-
-[JURISDICTION]
-
-will have jurisdiction over disputes arising from these Terms, subject to any mandatory consumer or other applicable legal rights.
-
----
-
 38. DISPUTE RESOLUTION
 
 Before bringing a formal legal claim, you agree, where legally permitted, to first contact ContextOS and attempt to resolve the dispute informally.
@@ -805,7 +789,4 @@ If you have questions about these Terms, contact:
 
 Context Operating System
 Legal: legal@contextos.ai
-Support: [SUPPORT EMAIL]
 Website: contextos.dev
-Legal Entity: [LEGAL ENTITY NAME]
-Address: [REGISTERED ADDRESS]`
