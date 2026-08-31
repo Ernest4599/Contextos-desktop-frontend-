@@ -146,8 +146,8 @@ function Settings() {
           onClick={() => navigate('/settings/aios-preferences')}
           className="w-full flex items-center gap-4 px-5 py-4 hover:bg-slate-50 dark:hover:bg-slate-900 transition-colors"
         >
-          <div className="w-10 h-10 rounded-xl bg-purple-600/10 flex items-center justify-center shrink-0">
-            <Sparkles size={18} className="text-purple-500 dark:text-purple-400" />
+          <div className="w-10 h-10 rounded-xl bg-blue-900/15 flex items-center justify-center shrink-0">
+            <Sparkles size={18} className="text-blue-800 dark:text-blue-300" />
           </div>
           <div className="flex-1 text-left">
             <p className="text-slate-900 dark:text-white font-medium text-sm">AIOS Preferences</p>
