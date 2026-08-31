@@ -790,3 +790,4 @@ If you have questions about these Terms, contact:
 Context Operating System
 Legal: legal@contextos.ai
 Website: contextos.dev
+Website: contextos.dev`
