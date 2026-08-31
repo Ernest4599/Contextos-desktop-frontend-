@@ -1,10 +1,64 @@
-import { FileText, Share2, CheckCircle2, ClipboardList, Boxes, ArrowRightCircle, MessageSquareText, Copy } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { FileText, Copy } from 'lucide-react'
 
-function FeatureChip({ icon, label }: { icon: React.ReactNode; label: string }) {
+const PRESERVED_ITEMS = [
+  { label: 'Decisions', desc: 'what you already chose' },
+  { label: 'Goals', desc: "what you're trying to achieve" },
+  { label: 'Constraints', desc: "what you can't change" },
+  { label: 'Current State', desc: 'where the work stands' },
+  { label: 'Next Steps', desc: 'what should happen next' },
+  { label: 'Open Questions', desc: 'what still needs an answer' },
+]
+
+function PreservedSlider() {
+  const [index, setIndex] = useState(0)
+  const [flipping, setFlipping] = useState(false)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFlipping(true)
+      const swapTimeout = setTimeout(() => {
+        setIndex((prev) => (prev + 1) % PRESERVED_ITEMS.length)
+        setFlipping(false)
+      }, 300)
+      return () => clearTimeout(swapTimeout)
+    }, 2400)
+    return () => clearInterval(interval)
+  }, [])
+
+  const current = PRESERVED_ITEMS[index]
+
   return (
-    <div className="flex flex-col items-center gap-[clamp(3px,0.5vw,8px)] rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/50 px-[clamp(4px,0.8vw,12px)] py-[clamp(6px,1vw,14px)]">
-      <div className="h-[clamp(11px,1.1vw,16px)] w-[clamp(11px,1.1vw,16px)] text-blue-400">{icon}</div>
-      <span className="text-center text-[clamp(6px,0.65vw,10px)] leading-tight text-slate-600 dark:text-slate-400">{label}</span>
+    <div
+      className="mt-[clamp(10px,1.6vw,24px)] overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100 dark:bg-slate-950/50 px-[clamp(12px,1.6vw,24px)] py-[clamp(14px,2vw,28px)]"
+      style={{ perspective: '800px' }}
+    >
+      <div
+        style={{
+          transformStyle: 'preserve-3d',
+          transition: 'transform 300ms ease, opacity 300ms ease',
+          transform: flipping ? 'rotateX(-90deg)' : 'rotateX(0deg)',
+          opacity: flipping ? 0 : 1,
+        }}
+      >
+        <p className="text-[clamp(13px,1.4vw,20px)] font-semibold text-blue-500 dark:text-blue-400">
+          {current.label}
+          <span className="ml-2 font-normal text-slate-600 dark:text-slate-400">
+            — {current.desc}
+          </span>
+        </p>
+      </div>
+
+      <div className="mt-[clamp(8px,1.2vw,16px)] flex gap-[clamp(3px,0.5vw,6px)]">
+        {PRESERVED_ITEMS.map((item, i) => (
+          <span
+            key={item.label}
+            className={`h-[3px] flex-1 rounded-full transition-colors duration-300 ${
+              i === index ? 'bg-blue-500' : 'bg-slate-300 dark:bg-slate-700'
+            }`}
+          />
+        ))}
+      </div>
     </div>
   )
 }
@@ -44,15 +98,15 @@ function Solution() {
         {/* LEFT COPY */}
         <div className="w-full md:w-[clamp(220px,26vw,380px)] md:shrink-0">
           <p className="mb-[clamp(4px,0.6vw,10px)] text-[clamp(8px,0.75vw,12px)] font-bold tracking-[0.2em] text-blue-400">
-            THE SOLUTION
+            WHAT GETS PRESERVED?
           </p>
           <h2 className="text-[clamp(20px,3vw,38px)] font-semibold leading-[1.1] tracking-tight text-slate-900 dark:text-white">
-            ContextOS captures
+            Not just your conversation.
             <br />
-            what matters.
+            The thinking behind it.
           </h2>
           <p className="mt-[clamp(6px,0.9vw,16px)] text-[clamp(10px,1vw,15px)] leading-6 text-slate-600 dark:text-slate-400">
-            We extract the signal from the noise and turn it into a portable Context Package.
+            The package contains:
           </p>
 
           <div className="mt-[clamp(10px,1.6vw,24px)] flex items-center gap-[clamp(4px,0.6vw,8px)] text-[clamp(10px,1.05vw,15px)] font-medium text-slate-900 dark:text-white">
@@ -60,14 +114,7 @@ function Solution() {
             Context Package
           </div>
 
-          <div className="mt-[clamp(6px,1vw,16px)] grid grid-cols-3 gap-[clamp(4px,0.7vw,10px)]">
-            <FeatureChip icon={<Share2 className="h-full w-full" />} label="Decisions" />
-            <FeatureChip icon={<CheckCircle2 className="h-full w-full" />} label="Goals" />
-            <FeatureChip icon={<ClipboardList className="h-full w-full" />} label="Constraints" />
-            <FeatureChip icon={<Boxes className="h-full w-full" />} label="State" />
-            <FeatureChip icon={<ArrowRightCircle className="h-full w-full" />} label="Next Steps" />
-            <FeatureChip icon={<MessageSquareText className="h-full w-full" />} label="Open Questions" />
-          </div>
+          <PreservedSlider />
         </div>
 
         {/* RIGHT: CONTEXT PACKAGE PREVIEW */}
