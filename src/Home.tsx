@@ -6,6 +6,7 @@ import Problem from './home/Problem'
 import Solution from './home/Solution'
 import HowItWorks from './home/HowItWorks'
 import TermsConsentBanner from './TermsConsentBanner'
+import FloatingAios from './home/FloatingAios'
 
 function Home() {
   return (
@@ -18,6 +19,7 @@ function Home() {
       <Solution />
       <HowItWorks />
       <TermsConsentBanner />
+      <FloatingAios />
     </div>
   )
 }
