@@ -64,42 +64,57 @@ function Hero() {
 
         {/* RIGHT VISUAL */}
         <div className="relative mt-8 h-[220px] min-w-0 sm:h-[280px] md:mt-0 md:h-[clamp(100px,30vw,400px)]">
-          <div className="absolute inset-x-0 top-0 z-0 aspect-video w-full overflow-hidden rounded-xl bg-slate-900 shadow-2xl shadow-black/50 md:left-[-60px] md:top-[calc(clamp(28px,4.5vw,64px)*-1)] md:w-[110%] md:rounded-[clamp(6px,1.2vw,20px)]">
-            <img
-              src={homeHeroImage}
-              alt="Person working with ContextOS across multiple screens"
-              className="h-full w-full object-cover"
-            />
+          {/* Embedded hero image with glow border + deep shadow */}
+          <div className="absolute inset-x-0 top-0 z-0 aspect-video w-full rounded-xl p-[2px] bg-gradient-to-br from-blue-500/50 via-blue-400/20 to-purple-500/30 shadow-[0_25px_70px_-15px_rgba(30,58,138,0.5)] dark:shadow-[0_25px_70px_-15px_rgba(0,0,0,0.7)] md:left-[-60px] md:top-[calc(clamp(28px,4.5vw,64px)*-1)] md:w-[110%] md:rounded-[clamp(6px,1.2vw,20px)]">
+            <div className="relative h-full w-full overflow-hidden rounded-[10px] md:rounded-[clamp(5px,1vw,18px)]">
+              <img
+                src={homeHeroImage}
+                alt="Person working with ContextOS across multiple screens"
+                className="h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 shadow-[inset_0_0_40px_20px_rgba(0,0,0,0.25)]" />
+            </div>
           </div>
 
-          {/* AIOS FLOATING CARD */}
-          <div className="absolute right-2 top-2 w-[38%] min-w-[110px] rounded-xl border border-slate-800 bg-slate-950/95 p-2.5 shadow-2xl shadow-black/60 backdrop-blur-xl sm:w-[30%] md:right-[40px] md:top-[clamp(2px,0.5vw,10px)] md:w-[26%] md:rounded-2xl md:p-[clamp(5px,1.1vw,20px)]">
-            <p className="text-xs font-bold text-white md:text-[clamp(9px,1.4vw,20px)]">AIOS</p>
-            <p className="mt-0.5 text-[9px] leading-[1.4] text-slate-400 md:mt-[clamp(1px,0.3vw,4px)] md:text-[clamp(6px,0.65vw,12px)]">
+          {/* AIOS FLOATING CARD — clickable, animated, theme-aware */}
+          <button
+            type="button"
+            onClick={() => navigate('/aios')}
+            style={{ animation: 'floatY 4s ease-in-out infinite' }}
+            className="absolute right-2 top-2 w-[38%] min-w-[110px] cursor-pointer rounded-xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 p-2.5 text-left shadow-2xl shadow-black/20 dark:shadow-black/60 backdrop-blur-xl transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.03] focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 sm:w-[30%] md:right-[40px] md:top-[clamp(2px,0.5vw,10px)] md:w-[26%] md:rounded-2xl md:p-[clamp(5px,1.1vw,20px)]"
+          >
+            <p className="text-xs font-bold text-slate-900 dark:text-white md:text-[clamp(9px,1.4vw,20px)]">AIOS</p>
+            <p className="mt-0.5 text-[9px] leading-[1.4] text-slate-600 dark:text-slate-400 md:mt-[clamp(1px,0.3vw,4px)] md:text-[clamp(6px,0.65vw,12px)]">
               Operating System
               <br />
               for AI Context
             </p>
 
-            <svg
-              viewBox="0 0 240 190"
+            <div
               className="mx-auto my-2 h-10 w-14 md:my-[clamp(4px,0.9vw,16px)] md:h-[clamp(28px,6vw,112px)] md:w-[clamp(40px,8.5vw,160px)]"
+              style={{ perspective: '400px' }}
             >
-              <defs>
-                <linearGradient id="aiosTop" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#60a5fa" />
-                  <stop offset="100%" stopColor="#1e3a8a" />
-                </linearGradient>
-              </defs>
-              <polygon points="120,110 220,140 120,170 20,140" fill="#1e2a6b" stroke="#3b5bdb" strokeWidth="1" />
-              <polygon points="120,80 220,110 120,140 20,110" fill="#2440a8" stroke="#5470e0" strokeWidth="1" />
-              <polygon points="120,30 220,70 120,110 20,70" fill="url(#aiosTop)" stroke="#93c5fd" strokeWidth="1.5" />
-              <polygon points="120,55 133,63 120,71 107,63" fill="#bfdbfe" opacity="0.9" />
-            </svg>
+              <svg
+                viewBox="0 0 240 190"
+                className="h-full w-full"
+                style={{ animation: 'spin3d 6s linear infinite', transformStyle: 'preserve-3d' }}
+              >
+                <defs>
+                  <linearGradient id="aiosTop" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stopColor="#60a5fa" />
+                    <stop offset="100%" stopColor="#1e3a8a" />
+                  </linearGradient>
+                </defs>
+                <polygon points="120,110 220,140 120,170 20,140" fill="#1e2a6b" stroke="#3b5bdb" strokeWidth="1" />
+                <polygon points="120,80 220,110 120,140 20,110" fill="#2440a8" stroke="#5470e0" strokeWidth="1" />
+                <polygon points="120,30 220,70 120,110 20,70" fill="url(#aiosTop)" stroke="#93c5fd" strokeWidth="1.5" />
+                <polygon points="120,55 133,63 120,71 107,63" fill="#bfdbfe" opacity="0.9" />
+              </svg>
+            </div>
 
-            <div className="border-t border-slate-800 pt-1.5 md:pt-[clamp(3px,0.7vw,12px)]">
+            <div className="border-t border-slate-200 dark:border-slate-800 pt-1.5 md:pt-[clamp(3px,0.7vw,12px)]">
               <div className="space-y-1 md:space-y-[clamp(2px,0.5vw,10px)]">
-                <div className="flex items-center gap-1.5 text-[9px] text-blue-400 md:gap-[clamp(2px,0.4vw,8px)] md:text-[clamp(6px,0.55vw,11px)]">
+                <div className="flex items-center gap-1.5 text-[9px] text-blue-500 dark:text-blue-400 md:gap-[clamp(2px,0.4vw,8px)] md:text-[clamp(6px,0.55vw,11px)]">
                   <Gem className="h-2.5 w-2.5 shrink-0 md:h-[clamp(6px,0.65vw,13px)] md:w-[clamp(6px,0.65vw,13px)]" />
                   <span className="truncate">ContextOS</span>
                 </div>
@@ -121,7 +136,7 @@ function Hero() {
                 </div>
               </div>
             </div>
-          </div>
+          </button>
         </div>
       </div>
     </section>
