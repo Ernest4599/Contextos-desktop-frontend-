@@ -13,7 +13,7 @@ export async function checkTermsAccepted(): Promise<boolean> {
     const data = await resp.json()
     return data.success ? !!data.accepted : false
   } catch {
-    return true
+    return false
   }
 }
 
