@@ -22,10 +22,36 @@ function PromptReady() {
 
   const generatedText = state.prompt
 
+  const fallbackCopy = (text: string) => {
+    const textarea = document.createElement('textarea')
+    textarea.value = text
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.focus()
+    textarea.select()
+    try {
+      document.execCommand('copy')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch {
+      // Clipboard truly unavailable; button just won't show "Copied!"
+    }
+    document.body.removeChild(textarea)
+  }
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(generatedText)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(generatedText).then(
+        () => {
+          setCopied(true)
+          setTimeout(() => setCopied(false), 2000)
+        },
+        () => fallbackCopy(generatedText)
+      )
+    } else {
+      fallbackCopy(generatedText)
+    }
   }
 
   return (
