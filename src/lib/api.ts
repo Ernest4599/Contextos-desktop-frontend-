@@ -106,6 +106,21 @@ export type QuickPromptResult = {
   accessDenied?: boolean
 }
 
+export type AiosQuickPromptResult = {
+  success: boolean
+  prompt?: string
+  error?: string
+}
+
+export async function callAiosQuickPrompt(message: string): Promise<AiosQuickPromptResult> {
+  const resp = await fetch(`${API_BASE_URL}/aios/quick-prompt`, {
+    method: 'POST',
+    headers: authHeaders(),
+    body: JSON.stringify({ message }),
+  })
+  return resp.json()
+}
+
 export async function callQuickPrompt(
   overview: string,
   decisions: string,

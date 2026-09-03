@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, X, ArrowRight, Send } from 'lucide-react'
-import { callQuickPrompt } from '../lib/api'
+import { Sparkles, X, ArrowRight, Send, LogIn } from 'lucide-react'
+import { callAiosQuickPrompt, getStoredToken } from '../lib/api'
 
 const BUBBLE_SIZE = 56
 const DRAG_THRESHOLD = 6
@@ -70,14 +70,25 @@ function FloatingAios() {
   const handleGenerate = async () => {
     if (!task.trim() || generating) return
     setGenError(null)
+
+    // AIOS personalization requires a stored identity tied to an account -
+    // license-only access has no persistent memory, so this specific
+    // feature is sign-in only. Check locally before calling the API so
+    // the person isn't told to "enter a license key" for something a
+    // license genuinely can't unlock.
+    if (!getStoredToken()) {
+      setGenError('signin_required')
+      return
+    }
+
     setGenerating(true)
     const startedAt = performance.now()
 
     try {
-      const result = await callQuickPrompt('', '', task.trim())
+      const result = await callAiosQuickPrompt(task.trim())
       const elapsedSeconds = (performance.now() - startedAt) / 1000
 
-      if (!result.success) {
+      if (!result.success || !result.prompt) {
         setGenError(result.error ?? 'Something went wrong')
         setGenerating(false)
         return
@@ -85,10 +96,7 @@ function FloatingAios() {
 
       navigate('/prompt-ready', {
         state: {
-          role: result.role,
           prompt: result.prompt,
-          assumptions: result.assumptions,
-          outputFormat: result.output_format,
           elapsedSeconds,
         },
       })
@@ -172,8 +180,27 @@ function FloatingAios() {
               <Send size={13} />
             </button>
           </div>
+
           {generating && <p className="text-slate-500 text-xs mb-2">Generating your prompt...</p>}
-          {genError && <p className="text-red-400 text-xs mb-2">{genError}</p>}
+
+          {genError === 'signin_required' && (
+            <div className="mb-2 flex items-center justify-between gap-2 rounded-lg bg-blue-600/5 border border-blue-600/20 px-3 py-2">
+              <span className="text-slate-600 dark:text-slate-400 text-xs">
+                AIOS needs an account to personalize your prompts.
+              </span>
+              <button
+                type="button"
+                onClick={() => navigate('/account')}
+                className="flex items-center gap-1 shrink-0 text-blue-600 dark:text-blue-400 text-xs font-semibold hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
+              >
+                <LogIn size={12} />
+                Sign In
+              </button>
+            </div>
+          )}
+          {genError && genError !== 'signin_required' && (
+            <p className="text-red-400 text-xs mb-2">{genError}</p>
+          )}
 
           <button
             type="button"
