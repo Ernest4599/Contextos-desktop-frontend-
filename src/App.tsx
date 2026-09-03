@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Lightbulb, Menu } from 'lucide-react'
 import Sidebar from './Sidebar'
-import Landing from './Landing'
 import Home from './Home'
 import Import from './Import'
 import Processing from './Processing'
@@ -121,7 +120,7 @@ function DashboardLayout() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Landing />} />
+      <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/terms" element={<TermsPage />} />
       <Route
         path="/*"
