@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { copyToClipboard } from './lib/clipboard'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Star, Copy, RefreshCw, Check, Key } from 'lucide-react'
-import { getMyLicense, rotateRecoveryCode, verifyLicenseByKey, storeLicenseKey, type License } from './lib/api'
+import { getMyLicense, rotateRecoveryCode, verifyLicenseByKey, storeLicenseKey, getStoredLicenseKey, type License } from './lib/api'
 import { useAuth } from './lib/useAuth'
 
 function LicensePage() {
@@ -32,6 +32,20 @@ function LicensePage() {
         } else {
           setLoadError(result.error ?? 'Failed to load license')
         }
+        setLoading(false)
+      })
+      return
+    }
+
+    const storedKey = getStoredLicenseKey()
+    if (storedKey) {
+      verifyLicenseByKey(storedKey).then((result) => {
+        if (result.success && result.license) {
+          setLicense(result.license)
+        }
+        // If the stored key is no longer valid, fall through silently to
+        // the manual-entry form below rather than showing an error for
+        // something the user didn't just type themselves.
         setLoading(false)
       })
     } else {
