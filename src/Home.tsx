@@ -5,6 +5,7 @@ import EveryAI from './home/EveryAI'
 import Problem from './home/Problem'
 import Solution from './home/Solution'
 import HowItWorks from './home/HowItWorks'
+import FAQ from './home/FAQ'
 import TermsConsentBanner from './TermsConsentBanner'
 import FloatingAios from './home/FloatingAios'
 
@@ -18,6 +19,7 @@ function Home() {
       <Problem />
       <Solution />
       <HowItWorks />
+      <FAQ />
       <TermsConsentBanner />
       <FloatingAios />
     </div>
