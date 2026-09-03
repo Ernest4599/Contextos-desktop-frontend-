@@ -2,14 +2,62 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Check, ShieldAlert } from 'lucide-react'
 import { purchaseLicenseWithCodes, storeLicenseKey } from './lib/api'
+import { useAuth } from './lib/useAuth'
 
-const PLANS = [
-  { id: 'pro', name: 'Pro', price: '$12/mo', features: ['Unlimited imports', 'AIOS enabled', 'Priority support'] },
-  { id: 'team', name: 'Team', price: '$29/mo', features: ['Everything in Pro', 'Shared projects', '5 seats'] },
+type Plan = {
+  id: string
+  name: string
+  price: string
+  features: string[]
+}
+
+const ANON_PLANS: Plan[] = [
+  {
+    id: 'free',
+    name: 'Start Free',
+    price: 'Free',
+    features: ['Import only', 'Low capability', 'Low usage'],
+  },
+  {
+    id: 'pro',
+    name: 'Get Pro',
+    price: '$7.99/mo',
+    features: ['Unlock Quick Prompt', 'Unlock Import (Medium)', 'Medium capability', 'Limited usage'],
+  },
+  {
+    id: 'max',
+    name: 'More Context',
+    price: '$19.99/mo',
+    features: ['High capability', 'More usage', 'Advanced prompts'],
+  },
+]
+
+const SIGNED_IN_PLANS: Plan[] = [
+  {
+    id: 'free',
+    name: 'Start Free',
+    price: 'Free',
+    features: ['Low capability', 'Low usage'],
+  },
+  {
+    id: 'pro',
+    name: 'Get Pro',
+    price: '$14.99/mo',
+    features: ['AIOS: Medium personalization', 'Medium capability', 'Limited usage'],
+  },
+  {
+    id: 'max',
+    name: 'More ContextOS',
+    price: '$29.99/mo',
+    features: ['AIOS: Super strong personalization', 'High capability for Import & Quick Prompt', 'More usage'],
+  },
 ]
 
 function UpgradePage() {
   const navigate = useNavigate()
+  const { isLoggedIn } = useAuth()
+  const PLANS = isLoggedIn ? SIGNED_IN_PLANS : ANON_PLANS
+
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
@@ -23,7 +71,8 @@ function UpgradePage() {
 
     try {
       // NOTE: payment is stubbed for now - this simulates a successful
-      // purchase immediately. Real Stripe/Paystack checkout wires in here later.
+      // purchase immediately, including for the free plan. Real
+      // Stripe/Paystack checkout wires in here later.
       const result = await purchaseLicenseWithCodes(selectedPlan)
       if (!result.success || !result.recovery_codes) {
         setErrorMsg(result.error ?? 'Purchase failed')
@@ -102,7 +151,9 @@ function UpgradePage() {
       </button>
 
       <h1 className="text-2xl font-bold text-slate-900 dark:text-white mb-1">Upgrade ContextOS</h1>
-      <p className="text-slate-600 dark:text-slate-400 mb-8">Choose a plan to unlock more.</p>
+      <p className="text-slate-600 dark:text-slate-400 mb-8">
+        {isLoggedIn ? 'Choose a plan to unlock more.' : 'Choose a plan to get started — no account needed.'}
+      </p>
 
       {errorMsg && (
         <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-4 py-3 mb-6">
@@ -142,7 +193,7 @@ function UpgradePage() {
         onClick={handlePurchase}
         className="w-full bg-blue-600 hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed text-white font-semibold text-sm py-3 rounded-xl transition-colors"
       >
-        {loading ? 'Processing...' : 'Continue to Payment'}
+        {loading ? 'Processing...' : selectedPlan === 'free' ? 'Start Free' : 'Continue to Payment'}
       </button>
     </div>
   )
