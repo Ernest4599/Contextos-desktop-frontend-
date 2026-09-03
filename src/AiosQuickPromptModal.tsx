@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { copyToClipboard } from './lib/clipboard'
 import { X, Send, Copy, Sparkles } from 'lucide-react'
 import { apiAiosQuickPrompt } from './lib/api'
 
@@ -32,9 +33,9 @@ function AiosQuickPromptModal({ onClose }: { onClose: () => void }) {
     }
   }
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!prompt) return
-    navigator.clipboard.writeText(prompt)
+    await copyToClipboard(prompt)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

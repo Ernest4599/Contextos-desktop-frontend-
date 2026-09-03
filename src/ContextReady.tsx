@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { copyToClipboard } from './lib/clipboard'
 import { useLocation, Navigate } from 'react-router-dom'
 import { MessageSquare, Check, Clock, Copy, ShieldCheck, Info } from 'lucide-react'
 
@@ -18,8 +19,8 @@ function ContextReady() {
 
   const generatedText = state.contextPackage
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generatedText)
+  const handleCopy = async () => {
+    await copyToClipboard(generatedText)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }
