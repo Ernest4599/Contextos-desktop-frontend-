@@ -327,12 +327,6 @@ export async function deleteAiosMemory(memoryId: number) {
 }
 
 
-export type AiosQuickPromptResult = {
-  success: boolean
-  prompt?: string
-  error?: string
-}
-
 export async function apiAiosQuickPrompt(message: string): Promise<AiosQuickPromptResult> {
   const token = getStoredToken()
   const resp = await fetch(`${API_BASE_URL}/aios/quick-prompt`, {
