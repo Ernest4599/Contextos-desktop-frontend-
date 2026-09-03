@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Check, ShieldAlert } from 'lucide-react'
-import { purchaseLicenseWithCodes } from './lib/api'
+import { purchaseLicenseWithCodes, storeLicenseKey } from './lib/api'
 
 const PLANS = [
   { id: 'pro', name: 'Pro', price: '$12/mo', features: ['Unlimited imports', 'AIOS enabled', 'Priority support'] },
@@ -29,6 +29,9 @@ function UpgradePage() {
         setErrorMsg(result.error ?? 'Purchase failed')
         setLoading(false)
         return
+      }
+      if (result.license) {
+        storeLicenseKey(result.license.license_key)
       }
       setCodes(result.recovery_codes)
     } catch (err) {

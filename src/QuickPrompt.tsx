@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Lightbulb, Sparkles, ArrowRight, ShieldCheck, Target, Check, ClipboardList, Lock, FileText } from 'lucide-react'
 import { callQuickPrompt } from './lib/api'
+import AccessRequiredNotice from './AccessRequiredNotice'
 
 function QuickPrompt() {
   const navigate = useNavigate()
@@ -10,9 +11,11 @@ function QuickPrompt() {
   const [task, setTask] = useState('')
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [accessDenied, setAccessDenied] = useState(false)
 
   const handleGenerate = async () => {
     setErrorMsg(null)
+    setAccessDenied(false)
     setLoading(true)
     const startedAt = performance.now()
 
@@ -21,7 +24,11 @@ function QuickPrompt() {
       const elapsedSeconds = (performance.now() - startedAt) / 1000
 
       if (!result.success) {
-        setErrorMsg(result.error ?? 'Something went wrong')
+        if (result.accessDenied) {
+          setAccessDenied(true)
+        } else {
+          setErrorMsg(result.error ?? 'Something went wrong')
+        }
         setLoading(false)
         return
       }
@@ -58,7 +65,13 @@ function QuickPrompt() {
         <p className="text-slate-600 dark:text-slate-400 mb-6 md:mb-8">Build a prompt from scratch — no conversation needed.</p>
 
         <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-6">
-          {errorMsg && (
+          {accessDenied && (
+            <div className="mb-6">
+              <AccessRequiredNotice />
+            </div>
+          )}
+
+          {errorMsg && !accessDenied && (
             <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
               {errorMsg}
             </div>

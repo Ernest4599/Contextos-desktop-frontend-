@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Key, Check } from 'lucide-react'
-import { recoverLicense } from './lib/api'
+import { recoverLicense, storeLicenseKey } from './lib/api'
 
 function RecoveryKeyPage() {
   const navigate = useNavigate()
@@ -25,6 +25,7 @@ function RecoveryKeyPage() {
         setLoading(false)
         return
       }
+      storeLicenseKey(response.license_key)
       setResult({
         license_key: response.license_key,
         plan: response.plan ?? '',

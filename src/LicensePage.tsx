@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { copyToClipboard } from './lib/clipboard'
 import { useNavigate } from 'react-router-dom'
 import { ArrowLeft, Star, Copy, RefreshCw, Check, Key } from 'lucide-react'
-import { getMyLicense, rotateRecoveryCode, verifyLicenseByKey, type License } from './lib/api'
+import { getMyLicense, rotateRecoveryCode, verifyLicenseByKey, storeLicenseKey, type License } from './lib/api'
 import { useAuth } from './lib/useAuth'
 
 function LicensePage() {
@@ -52,6 +53,7 @@ function LicensePage() {
         setVerifying(false)
         return
       }
+      storeLicenseKey(result.license.license_key)
       setLicense(result.license)
     } catch (err) {
       setVerifyError(err instanceof Error ? err.message : 'Failed to reach the server')
@@ -60,9 +62,9 @@ function LicensePage() {
     }
   }
 
-  const handleCopy = () => {
+  const handleCopy = async () => {
     if (!license) return
-    navigator.clipboard.writeText(license.license_key)
+    await copyToClipboard(license.license_key)
     setCopied(true)
     setTimeout(() => setCopied(false), 2000)
   }

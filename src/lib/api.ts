@@ -12,8 +12,16 @@ async function streamSSE(
   const contentType = resp.headers.get('content-type') || ''
   if (contentType.includes('application/json')) {
     const data = await resp.json()
+    if (resp.status === 401) {
+      onEvent({ event: 'access_denied', data: { message: data.detail || 'Sign in or enter a license key to continue.' } })
+      return
+    }
     if (data.success === false) {
       onEvent({ event: 'error', data: { message: data.error } })
+      return
+    }
+    if (!resp.ok) {
+      onEvent({ event: 'error', data: { message: data.detail || data.error || 'Something went wrong' } })
       return
     }
   }
@@ -58,7 +66,7 @@ export function streamProcessPaste(text: string, onEvent: (evt: SSEEvent) => voi
     `${API_BASE_URL}/process/paste`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: accessHeaders(),
       body: JSON.stringify({ text }),
     },
     onEvent
@@ -70,7 +78,7 @@ export function streamProcessShareLink(url: string, onEvent: (evt: SSEEvent) => 
     `${API_BASE_URL}/process/share-link`,
     {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: accessHeaders(),
       body: JSON.stringify({ url }),
     },
     onEvent
@@ -82,7 +90,7 @@ export function streamProcessUpload(file: File, onEvent: (evt: SSEEvent) => void
   formData.append('file', file)
   return streamSSE(
     `${API_BASE_URL}/process/upload`,
-    { method: 'POST', body: formData },
+    { method: 'POST', headers: accessHeadersNoContentType(), body: formData },
     onEvent
   )
 }
@@ -95,6 +103,7 @@ export type QuickPromptResult = {
   assumptions?: string[]
   output_format?: string
   error?: string
+  accessDenied?: boolean
 }
 
 export async function callQuickPrompt(
@@ -104,10 +113,14 @@ export async function callQuickPrompt(
 ): Promise<QuickPromptResult> {
   const resp = await fetch(`${API_BASE_URL}/quick-prompt`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: accessHeaders(),
     body: JSON.stringify({ overview, decisions, task }),
   })
-  return resp.json()
+  const data = await resp.json()
+  if (resp.status === 401) {
+    return { success: false, error: data.detail || 'Sign in or enter a license key to continue.', accessDenied: true }
+  }
+  return data
 }
 
 
@@ -115,6 +128,43 @@ export async function callQuickPrompt(
 
 const TOKEN_KEY = 'contextos_token'
 const EMAIL_KEY = 'contextos_email'
+const LICENSE_KEY_STORAGE = 'contextos_license_key'
+
+export function getStoredLicenseKey(): string | null {
+  return localStorage.getItem(LICENSE_KEY_STORAGE)
+}
+
+export function storeLicenseKey(key: string) {
+  localStorage.setItem(LICENSE_KEY_STORAGE, key)
+}
+
+export function clearLicenseKey() {
+  localStorage.removeItem(LICENSE_KEY_STORAGE)
+}
+
+function accessHeaders(): HeadersInit {
+  const token = getStoredToken()
+  const licenseKey = getStoredLicenseKey()
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  } else if (licenseKey) {
+    headers['X-License-Key'] = licenseKey
+  }
+  return headers
+}
+
+function accessHeadersNoContentType(): HeadersInit {
+  const token = getStoredToken()
+  const licenseKey = getStoredLicenseKey()
+  const headers: Record<string, string> = {}
+  if (token) {
+    headers.Authorization = `Bearer ${token}`
+  } else if (licenseKey) {
+    headers['X-License-Key'] = licenseKey
+  }
+  return headers
+}
 
 export function getStoredToken(): string | null {
   return localStorage.getItem(TOKEN_KEY)

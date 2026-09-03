@@ -6,6 +6,7 @@ import {
   Shield, HelpCircle, Key, ArrowRight, Package, Server
 } from 'lucide-react'
 import { streamProcessPaste, streamProcessShareLink, streamProcessUpload } from './lib/api'
+import AccessRequiredNotice from './AccessRequiredNotice'
 
 type LocationState =
   | { method: 'link'; url: string }
@@ -48,6 +49,7 @@ function Processing() {
     tasks: 0, constraints: 0, key_facts: 0, open_questions: 0, next_action: 0,
   })
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+  const [accessDenied, setAccessDenied] = useState(false)
   const startedRef = useRef(false)
 
   const stepIndex = completedSteps.size
@@ -87,6 +89,8 @@ function Processing() {
             },
           })
         }, 500)
+      } else if (evt.event === 'access_denied') {
+        setAccessDenied(true)
       } else if (evt.event === 'error') {
         setErrorMsg(evt.data.message)
       }
@@ -142,7 +146,13 @@ function Processing() {
           <h2 className="text-slate-900 dark:text-white text-lg font-semibold mb-1 md:text-xl">Analyzing your conversation...</h2>
           <p className="text-slate-600 dark:text-slate-400 text-sm mb-6 md:mb-8">This will only take a few seconds.</p>
 
-          {errorMsg && (
+          {accessDenied && (
+            <div className="mb-6">
+              <AccessRequiredNotice />
+            </div>
+          )}
+
+          {errorMsg && !accessDenied && (
             <div className="border border-red-600/40 bg-red-600/10 text-red-400 text-sm rounded-xl px-5 py-4 mb-6">
               {errorMsg}
             </div>
