@@ -631,6 +631,44 @@ export async function setAdminRole(
   return resp.json()
 }
 
+export type AdminIntegrationProvider = {
+  provider: string
+  success: number
+  failure: number
+  total: number
+}
+
+export async function getAdminIntegrations(): Promise<{ providers: AdminIntegrationProvider[] }> {
+  const resp = await fetch(`${API_BASE_URL}/admin/integrations`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export type IntegrationEvent = {
+  id: number
+  provider: string
+  success: boolean
+  error_message: string | null
+  created_at: string | null
+}
+
+export type IntegrationEventsResult = {
+  events: IntegrationEvent[]
+  total: number
+  limit: number
+  offset: number
+}
+
+export async function getAdminIntegrationEvents(
+  limit = 25,
+  offset = 0,
+  provider?: string
+): Promise<IntegrationEventsResult> {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) })
+  if (provider) params.set('provider', provider)
+  const resp = await fetch(`${API_BASE_URL}/admin/integrations/events?${params}`, { headers: authHeaders() })
+  return resp.json()
+}
+
 export async function revokeUserLicense(
   userId: number
 ): Promise<{ success: boolean; error?: string; license_id?: number; status?: string }> {

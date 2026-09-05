@@ -28,6 +28,7 @@ import AdminOverview from './admin/AdminOverview'
 import AdminSecurityEvents from './admin/AdminSecurityEvents'
 import AdminUsers from './admin/AdminUsers'
 import AdminUserDetail from './admin/AdminUserDetail'
+import AdminIntegrations from './admin/AdminIntegrations'
 
 function DashboardLayout() {
   const location = useLocation()
@@ -136,6 +137,7 @@ function App() {
         <Route index element={<AdminOverview />} />
         <Route path="users" element={<AdminUsers />} />
         <Route path="users/:userId" element={<AdminUserDetail />} />
+        <Route path="integrations" element={<AdminIntegrations />} />
         <Route path="security" element={<AdminSecurityEvents />} />
       </Route>
       <Route

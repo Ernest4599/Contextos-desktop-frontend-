@@ -1,10 +1,11 @@
 import { Outlet, NavLink, useNavigate } from 'react-router-dom'
-import { LayoutDashboard, ShieldAlert, Users, ArrowLeft } from 'lucide-react'
+import { LayoutDashboard, ShieldAlert, Users, Plug, ArrowLeft } from 'lucide-react'
 import Logo from '../Logo'
 
 const navItems = [
   { to: '/admin', label: 'Overview', icon: LayoutDashboard, end: true },
   { to: '/admin/users', label: 'Users', icon: Users },
+  { to: '/admin/integrations', label: 'Integrations', icon: Plug },
   { to: '/admin/security', label: 'Audit Log', icon: ShieldAlert },
 ]
 
