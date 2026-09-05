@@ -570,3 +570,73 @@ export async function getAdminSecurityEvents(limit = 10, offset = 0, eventType?:
   const resp = await fetch(`${API_BASE_URL}/admin/security-events?${params}`, { headers: authHeaders() })
   return resp.json()
 }
+
+export type AdminUser = {
+  id: number
+  email: string
+  is_admin: boolean
+  created_at: string | null
+  last_login_at: string | null
+}
+
+export type AdminUsersListResult = {
+  users: AdminUser[]
+  total: number
+  limit: number
+  offset: number
+}
+
+export async function getAdminUsers(search?: string, limit = 25, offset = 0): Promise<AdminUsersListResult> {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) })
+  if (search) params.set('search', search)
+  const resp = await fetch(`${API_BASE_URL}/admin/users?${params}`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export type AdminLicense = {
+  license_id: number
+  license_key: string
+  plan: string
+  status: string
+  created_at: string | null
+  expires_at: string | null
+}
+
+export type AdminUserDetail = {
+  success: boolean
+  error?: string
+  user?: AdminUser
+  license?: AdminLicense | null
+  activity?: {
+    context_packages: number
+    aios_memories: number
+    projects: number
+  }
+}
+
+export async function getAdminUser(userId: number): Promise<AdminUserDetail> {
+  const resp = await fetch(`${API_BASE_URL}/admin/users/${userId}`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function setAdminRole(
+  userId: number,
+  isAdmin: boolean
+): Promise<{ success: boolean; error?: string; id?: number; is_admin?: boolean }> {
+  const resp = await fetch(`${API_BASE_URL}/admin/users/${userId}/admin`, {
+    method: 'PATCH',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_admin: isAdmin }),
+  })
+  return resp.json()
+}
+
+export async function revokeUserLicense(
+  userId: number
+): Promise<{ success: boolean; error?: string; license_id?: number; status?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/admin/users/${userId}/license/revoke`, {
+    method: 'POST',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
