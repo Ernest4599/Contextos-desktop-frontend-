@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Plus, Folder, MoreVertical, ChevronRight, Briefcase, X } from 'lucide-react'
+import { Plus, Folder, MoreVertical, ChevronRight, Briefcase, X, Lock } from 'lucide-react'
 import { getProjects, createProject, type Project } from './lib/api'
+import { useAuth } from './lib/useAuth'
 
 function formatRelativeTime(iso: string | null | undefined): string {
   if (!iso) return ''
@@ -93,6 +94,7 @@ function NewProjectModal({ onClose, onCreated }: { onClose: () => void; onCreate
 
 function Projects() {
   const navigate = useNavigate()
+  const { isLoggedIn, checking: authChecking } = useAuth()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
@@ -111,8 +113,47 @@ function Projects() {
   }
 
   useEffect(() => {
+    if (authChecking) return
+    if (!isLoggedIn) {
+      setLoading(false)
+      return
+    }
     loadProjects()
-  }, [])
+  }, [authChecking, isLoggedIn])
+
+  if (authChecking || (loading && isLoggedIn)) {
+    return (
+      <div className="flex-1 p-6 h-dvh overflow-y-auto bg-cream dark:bg-transparent">
+        <p className="text-slate-500 text-sm">Loading...</p>
+      </div>
+    )
+  }
+
+  if (!isLoggedIn) {
+    return (
+      <div className="flex-1 p-6 h-dvh overflow-y-auto bg-cream dark:bg-transparent">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white mb-2">Projects</h1>
+        <p className="text-slate-600 dark:text-slate-400 mb-8">Your AI projects, saved securely to your account.</p>
+
+        <div className="flex flex-col items-center text-center mt-16 pb-8">
+          <div className="w-14 h-14 rounded-full bg-blue-600/10 flex items-center justify-center mb-4">
+            <Lock size={24} className="text-blue-500 dark:text-blue-400" />
+          </div>
+          <h3 className="text-slate-900 dark:text-white font-semibold mb-1">Sign in to use Projects</h3>
+          <p className="text-slate-500 text-sm mb-6 max-w-xs">
+            Projects are tied to your account so they're there whenever you come back.
+          </p>
+          <button
+            type="button"
+            onClick={() => navigate('/account')}
+            className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 p-6 h-dvh overflow-y-auto bg-cream dark:bg-transparent">
@@ -129,10 +170,9 @@ function Projects() {
       </div>
       <p className="text-slate-600 dark:text-slate-400 mb-8">Your AI projects, saved securely to your account.</p>
 
-      {loading && <p className="text-slate-500 text-sm">Loading your projects...</p>}
       {loadError && <p className="text-red-400 text-sm">{loadError}</p>}
 
-      {!loading && !loadError && projects.length === 0 && (
+      {!loadError && projects.length === 0 && (
         <div className="flex flex-col items-center text-center mt-16 pb-8">
           <Briefcase size={28} className="text-slate-400 dark:text-slate-600 mb-3" />
           <h3 className="text-slate-900 dark:text-white font-semibold mb-1">No projects yet</h3>
@@ -148,7 +188,7 @@ function Projects() {
         </div>
       )}
 
-      {!loading && !loadError && projects.length > 0 && (
+      {!loadError && projects.length > 0 && (
         <div className="flex flex-col gap-4">
           {projects.map((project) => (
             <div
