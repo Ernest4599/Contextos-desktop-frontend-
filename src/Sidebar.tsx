@@ -1,12 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { NavLink, Link, useNavigate, useLocation, useSearchParams } from 'react-router-dom'
 import {
   Home, Zap, Folder, Upload, Package, Settings, ShieldCheck, ChevronDown,
-  Sparkles, Brain, User, Sliders, BookOpen, Target, X,
+  Sparkles, Brain, User, Sliders, BookOpen, Target, X, Key,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import Logo from './Logo'
 import { useAuth } from './lib/useAuth'
+import { getMyLicense, verifyLicenseByKey, getStoredLicenseKey, type License } from './lib/api'
 
 const navItems = [
   { to: '/home', label: 'Home', icon: Home },
@@ -57,6 +58,33 @@ function Sidebar({ extra, onClose }: { extra?: ReactNode; onClose?: () => void }
   const isAiosMemoriesRoute = location.pathname === '/aios/memories'
   const activeCategory = searchParams.get('category') || ''
   const [aiosOpen, setAiosOpen] = useState(isAiosRoute)
+  const [license, setLicense] = useState<License | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadLicense() {
+      if (isLoggedIn) {
+        const result = await getMyLicense()
+        if (!cancelled) setLicense(result.success && result.license ? result.license : null)
+        return
+      }
+
+      const storedKey = getStoredLicenseKey()
+      if (storedKey) {
+        const result = await verifyLicenseByKey(storedKey)
+        if (!cancelled) setLicense(result.success && result.license ? result.license : null)
+        return
+      }
+
+      if (!cancelled) setLicense(null)
+    }
+
+    loadLicense()
+    return () => {
+      cancelled = true
+    }
+  }, [isLoggedIn])
 
   return (
     <aside className="w-64 max-w-[85vw] bg-cream dark:bg-slate-950 border-r border-slate-200 dark:border-slate-800 h-dvh flex flex-col p-4 overflow-y-auto">
@@ -141,6 +169,31 @@ function Sidebar({ extra, onClose }: { extra?: ReactNode; onClose?: () => void }
           </NavLink>
         ))}
       </nav>
+
+      {license && (
+        <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
+          <p className="text-slate-500 text-xs font-medium px-2 mb-3">LICENSE</p>
+          <button
+            type="button"
+            onClick={() => navigate('/settings/license')}
+            className="flex items-center justify-between gap-2 px-2 py-2 w-full rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+          >
+            <div className="flex items-center gap-2">
+              <Key size={16} className="text-blue-600 dark:text-blue-400" />
+              <span className="text-slate-800 dark:text-slate-200 text-sm font-medium capitalize">{license.plan} Plan</span>
+            </div>
+            <span
+              className={`text-xs font-medium px-2 py-0.5 rounded-full capitalize ${
+                license.status === 'active'
+                  ? 'bg-green-600/10 text-green-600 dark:text-green-400'
+                  : 'bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300'
+              }`}
+            >
+              {license.status}
+            </span>
+          </button>
+        </div>
+      )}
 
       <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-800">
         <p className="text-slate-500 text-xs font-medium px-2 mb-3">SYSTEM STATUS</p>
