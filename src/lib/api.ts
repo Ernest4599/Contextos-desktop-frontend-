@@ -224,7 +224,7 @@ export async function apiLogin(email: string, password: string): Promise<AuthRes
   return resp.json()
 }
 
-export async function apiCheckSession(): Promise<{ success: boolean; email?: string }> {
+export async function apiCheckSession(): Promise<{ success: boolean; email?: string; is_admin?: boolean }> {
   const token = getStoredToken()
 
   const resp = await fetch(`${API_BASE_URL}/auth/me`, {
@@ -487,6 +487,45 @@ export async function verifyLicenseByKey(licenseKey: string): Promise<LicenseRes
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ license_key: licenseKey }),
+  })
+  return resp.json()
+}
+
+
+// --- Packages ---
+
+export type ContextPackage = {
+  id: number
+  source: string
+  title: string
+  preview: string
+  content: string
+  created_at?: string
+}
+
+export type PackagesResult = {
+  success: boolean
+  packages?: ContextPackage[]
+  error?: string
+}
+
+export async function getPackages(): Promise<PackagesResult> {
+  const resp = await fetch(`${API_BASE_URL}/packages`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export async function deletePackage(packageId: number): Promise<{ success: boolean; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/packages/${packageId}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  })
+  return resp.json()
+}
+
+export async function clearPackages(): Promise<{ success: boolean; error?: string }> {
+  const resp = await fetch(`${API_BASE_URL}/packages/clear`, {
+    method: 'POST',
+    headers: authHeaders(),
   })
   return resp.json()
 }

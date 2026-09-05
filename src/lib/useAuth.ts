@@ -3,6 +3,7 @@ import { getStoredEmail, getStoredToken, apiCheckSession, clearSession } from '.
 
 export function useAuth() {
   const [email, setEmail] = useState<string | null>(getStoredEmail())
+  const [isAdmin, setIsAdmin] = useState(false)
   const [checking, setChecking] = useState(true)
 
   useEffect(() => {
@@ -16,9 +17,11 @@ export function useAuth() {
       .then((result) => {
         if (result.success && result.email) {
           setEmail(result.email)
+          setIsAdmin(!!result.is_admin)
         } else {
           clearSession()
           setEmail(null)
+          setIsAdmin(false)
         }
       })
       .catch(() => {
@@ -33,7 +36,8 @@ export function useAuth() {
   const signOut = () => {
     clearSession()
     setEmail(null)
+    setIsAdmin(false)
   }
 
-  return { email, isLoggedIn: !!email, checking, setEmail, signOut }
+  return { email, isLoggedIn: !!email, isAdmin, checking, setEmail, signOut }
 }
