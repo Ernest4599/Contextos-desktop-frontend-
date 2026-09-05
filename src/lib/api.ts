@@ -529,3 +529,44 @@ export async function clearPackages(): Promise<{ success: boolean; error?: strin
   })
   return resp.json()
 }
+
+
+// --- Admin ---
+
+export type AdminOverview = {
+  users: number
+  aios_activity: number
+  context_packages: number
+  error_rate: number | null
+  processing_jobs: number | null
+}
+
+export async function getAdminOverview(): Promise<AdminOverview> {
+  const resp = await fetch(`${API_BASE_URL}/admin/overview`, { headers: authHeaders() })
+  return resp.json()
+}
+
+export type SecurityEvent = {
+  id: number
+  event_type: string
+  user_id: number | null
+  user_email: string | null
+  success: boolean
+  ip_hash: string | null
+  detail: string | null
+  created_at: string | null
+}
+
+export type SecurityEventsResult = {
+  events: SecurityEvent[]
+  total: number
+  limit: number
+  offset: number
+}
+
+export async function getAdminSecurityEvents(limit = 10, offset = 0, eventType?: string): Promise<SecurityEventsResult> {
+  const params = new URLSearchParams({ limit: String(limit), offset: String(offset) })
+  if (eventType) params.set('event_type', eventType)
+  const resp = await fetch(`${API_BASE_URL}/admin/security-events?${params}`, { headers: authHeaders() })
+  return resp.json()
+}

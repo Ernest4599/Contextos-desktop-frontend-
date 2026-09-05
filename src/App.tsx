@@ -22,6 +22,10 @@ import AiosOverview from './AiosOverview'
 import AiosMemories from './AiosMemories'
 import TermsPage from './TermsPage'
 import { TermsProvider, useTerms } from './lib/TermsContext'
+import AdminRoute from './AdminRoute'
+import AdminLayout from './admin/AdminLayout'
+import AdminOverview from './admin/AdminOverview'
+import AdminSecurityEvents from './admin/AdminSecurityEvents'
 
 function DashboardLayout() {
   const location = useLocation()
@@ -119,6 +123,17 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/home" replace />} />
       <Route path="/terms" element={<TermsPage />} />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminLayout />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<AdminOverview />} />
+        <Route path="security" element={<AdminSecurityEvents />} />
+      </Route>
       <Route
         path="/*"
         element={
